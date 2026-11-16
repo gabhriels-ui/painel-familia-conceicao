@@ -1,0 +1,6 @@
+{
+  "name": "Crônicas da Família Conceição",
+  "description": "Painel estratégico familiar, financeiro e espiritual do Comandante Gabriel rumo à conquista da fortaleza patrimonial e chegada do herdeiro em 2027.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

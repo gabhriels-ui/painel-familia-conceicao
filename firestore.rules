@@ -1,0 +1,756 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // 1. Rede de Segurança Global (Default-Deny)
+    // =========================================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // =========================================================================
+    // 2. Primitivas e Guardas Globais
+    // =========================================================================
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // =========================================================================
+    // 3. Validadores de Esquema (Anti-Update-Gap)
+    // =========================================================================
+    function isNonNegNumber(val, maxVal) {
+      return (val is int || val is float) && val >= 0 && val <= maxVal;
+    }
+
+    function isValidFortressState(data, userId) {
+      return data.keys().hasAll([
+          'ownerId', 'box1', 'box2', 'box3', 'box4', 'currentCarValue',
+          'xp', 'streak', 'arenaWins', 'activeTab', 'oracleIdx',
+          'rosaryDecades', 'rosaryCompleted', 'cdiTotal', 'soundEnabled',
+          'providerDuties', 'unlockedMilestones', 'feudChecklist',
+          'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerId', 'box1', 'box2', 'box3', 'box4', 'currentCarValue',
+          'xp', 'streak', 'arenaWins', 'activeTab', 'oracleIdx',
+          'rosaryDecades', 'rosaryCompleted', 'cdiTotal', 'soundEnabled',
+          'providerDuties', 'unlockedMilestones', 'feudChecklist', 'xpHistory',
+          'spiritual', 'vocational', 'createdAt', 'updatedAt'
+        ])
+        && data.ownerId is string
+        && data.ownerId == userId
+        && isValidId(data.ownerId)
+        && isNonNegNumber(data.box1, 1000000000)
+        && isNonNegNumber(data.box2, 1000000000)
+        && isNonNegNumber(data.box3, 1000000000)
+        && isNonNegNumber(data.box4, 1000000000)
+        && isNonNegNumber(data.currentCarValue, 1000000000)
+        && isNonNegNumber(data.xp, 1000000000)
+        && isNonNegNumber(data.streak, 1000000)
+        && isNonNegNumber(data.arenaWins, 1000000)
+        && data.activeTab is string
+        && data.activeTab.size() <= 32
+        && data.activeTab in ['comando', 'rota', 'corolla', 'provedor', 'cronicas']
+        && isNonNegNumber(data.oracleIdx, 10000)
+        && isNonNegNumber(data.rosaryDecades, 5)
+        && isNonNegNumber(data.rosaryCompleted, 1000000)
+        && isNonNegNumber(data.cdiTotal, 1000000000)
+        && data.soundEnabled is bool
+        && data.providerDuties is map
+        && data.providerDuties.keys().size() <= 16
+        && data.unlockedMilestones is map
+        && data.unlockedMilestones.keys().size() <= 32
+        && data.feudChecklist is map
+        && data.feudChecklist.keys().hasOnly([
+          'feudo_3_enxoval',
+          'feudo_3_nascimento',
+          'feudo_4_ipva',
+          'feudo_4_emprestimo',
+          'feudo_6_investimentos',
+          'feudo_6_quitacao_casa'
+        ])
+        && (!('xpHistory' in data) || (data.xpHistory is map && data.xpHistory.keys().size() <= 45))
+        && (!('spiritual' in data) || isValidSpiritualState(data.spiritual))
+        && (!('vocational' in data) || isValidVocationalState(data.vocational))
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidSpiritualState(s) {
+      return s is map
+        && s.keys().hasAll([
+          'spiritualXp', 'lastPrayerDate', 'lastDecayDate',
+          'novenaStreak', 'novenaLastDate', 'dailyGoalDate',
+          'dailyGoals', 'decayedXpTotal'
+        ])
+        && s.keys().hasOnly([
+          'spiritualXp', 'lastPrayerDate', 'lastDecayDate',
+          'novenaStreak', 'novenaLastDate', 'dailyGoalDate',
+          'dailyGoals', 'decayedXpTotal', 'pmDutyDate'
+        ])
+        && isNonNegNumber(s.spiritualXp, 100000000)
+        && s.lastPrayerDate is string
+        && s.lastPrayerDate.size() <= 16
+        && s.lastDecayDate is string
+        && s.lastDecayDate.size() <= 16
+        && isNonNegNumber(s.novenaStreak, 10000)
+        && s.novenaLastDate is string
+        && s.novenaLastDate.size() <= 16
+        && s.dailyGoalDate is string
+        && s.dailyGoalDate.size() <= 16
+        && s.dailyGoals is map
+        && s.dailyGoals.keys().hasOnly(['oracao', 'dezena', 'lectio', 'novena'])
+        && (!('oracao' in s.dailyGoals) || s.dailyGoals.oracao is bool)
+        && (!('dezena' in s.dailyGoals) || s.dailyGoals.dezena is bool)
+        && (!('lectio' in s.dailyGoals) || s.dailyGoals.lectio is bool)
+        && (!('novena' in s.dailyGoals) || s.dailyGoals.novena is bool)
+        && isNonNegNumber(s.decayedXpTotal, 100000000)
+        && (!('pmDutyDate' in s) || (s.pmDutyDate is string && s.pmDutyDate.size() <= 16));
+    }
+
+    function isValidVocationalState(v) {
+      return v is map
+        && v.keys().hasAll([
+          'tccTheme', 'tccStages', 'academicXp', 'pmEquipment', 'studyHours',
+          'pullupBest', 'pullupTarget', 'workoutsTotal', 'creatineStockGrams',
+          'creatineDailyDoseGrams', 'creatineLastTakenDate', 'healthChecks'
+        ])
+        && v.keys().hasOnly([
+          'tccTheme', 'tccStages', 'academicXp', 'brainXp', 'bodyXp',
+          'pmEquipment', 'studyHours', 'pullupBest', 'pullupTarget',
+          'workoutsTotal', 'creatineStockGrams', 'creatineDailyDoseGrams',
+          'creatineLastTakenDate', 'healthChecks'
+        ])
+        && v.tccTheme is string
+        && v.tccTheme.size() >= 1
+        && v.tccTheme.size() <= 200
+        && v.tccStages is map
+        && v.tccStages.keys().size() <= 10
+        && isNonNegNumber(v.academicXp, 100000000)
+        && (!('brainXp' in v) || isNonNegNumber(v.brainXp, 100000000))
+        && (!('bodyXp' in v) || isNonNegNumber(v.bodyXp, 100000000))
+        && v.pmEquipment is map
+        && v.pmEquipment.keys().size() <= 10
+        && v.studyHours is map
+        && v.studyHours.keys().hasAll(['cfo', 'prf', 'pf'])
+        && v.studyHours.keys().hasOnly(['cfo', 'prf', 'pf'])
+        && isNonNegNumber(v.studyHours.cfo, 50000)
+        && isNonNegNumber(v.studyHours.prf, 50000)
+        && isNonNegNumber(v.studyHours.pf, 50000)
+        && isNonNegNumber(v.pullupBest, 500)
+        && isNonNegNumber(v.pullupTarget, 500)
+        && isNonNegNumber(v.workoutsTotal, 100000)
+        && isNonNegNumber(v.creatineStockGrams, 50000)
+        && isNonNegNumber(v.creatineDailyDoseGrams, 100)
+        && v.creatineLastTakenDate is string
+        && v.creatineLastTakenDate.size() <= 32
+        && v.healthChecks is map
+        && v.healthChecks.keys().size() <= 10;
+    }
+
+    function isValidTransaction(data, userId) {
+      return data.keys().hasAll([
+          'ownerId', 'vaultId', 'vaultName', 'previousValue',
+          'newValue', 'difference', 'dateIso', 'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerId', 'vaultId', 'vaultName', 'previousValue',
+          'newValue', 'difference', 'dateIso', 'createdAt'
+        ])
+        && data.ownerId is string
+        && data.ownerId == userId
+        && isValidId(data.ownerId)
+        && data.vaultId is string
+        && data.vaultId.size() >= 1
+        && data.vaultId.size() <= 16
+        && data.vaultId in ['1', '2', '3', '4', 'cdi']
+        && data.vaultName is string
+        && data.vaultName.size() >= 1
+        && data.vaultName.size() <= 120
+        && isNonNegNumber(data.previousValue, 1000000000)
+        && isNonNegNumber(data.newValue, 1000000000)
+        && (data.difference is int || data.difference is float)
+        && data.difference >= -1000000000
+        && data.difference <= 1000000000
+        && data.dateIso is string
+        && data.dateIso.size() >= 10
+        && data.dateIso.size() <= 40
+        && data.createdAt is timestamp;
+    }
+
+    function isValidLetter(data, userId) {
+      return data.keys().hasAll(['ownerId', 'title', 'body', 'date', 'createdAt'])
+        && data.keys().hasOnly(['ownerId', 'title', 'body', 'date', 'createdAt'])
+        && data.ownerId is string
+        && data.ownerId == userId
+        && isValidId(data.ownerId)
+        && data.title is string
+        && data.title.size() >= 1
+        && data.title.size() <= 160
+        && data.body is string
+        && data.body.size() >= 1
+        && data.body.size() <= 5000
+        && data.date is string
+        && data.date.size() >= 4
+        && data.date.size() <= 32
+        && data.createdAt is timestamp;
+    }
+
+    function isValidRecurringCost(data, userId) {
+      return data.keys().hasAll(['ownerId', 'name', 'amount', 'category', 'dueDay', 'active', 'createdAt'])
+        && data.keys().hasOnly(['ownerId', 'name', 'amount', 'category', 'dueDay', 'active', 'createdAt'])
+        && data.ownerId is string
+        && data.ownerId == userId
+        && isValidId(data.ownerId)
+        && data.name is string
+        && data.name.size() >= 1
+        && data.name.size() <= 80
+        && isNonNegNumber(data.amount, 1000000000)
+        && data.category is string
+        && data.category.size() >= 1
+        && data.category.size() <= 24
+        && data.category in ['mercado', 'educacao', 'lar', 'transporte', 'outros']
+        && data.dueDay is int
+        && data.dueDay >= 1
+        && data.dueDay <= 31
+        && data.active is bool
+        && data.createdAt is timestamp;
+    }
+
+    function isValidTacticalExpense(data, userId) {
+      return data.keys().hasAll([
+          'ownerId', 'userReport', 'classification', 'categoryLabel',
+          'itemDescription', 'amount', 'xpDelta', 'streakReset',
+          'tacticalReply', 'dateIso', 'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerId', 'userReport', 'classification', 'categoryLabel',
+          'itemDescription', 'amount', 'xpDelta', 'streakReset',
+          'tacticalReply', 'dateIso', 'createdAt'
+        ])
+        && data.ownerId is string
+        && data.ownerId == userId
+        && isValidId(data.ownerId)
+        && data.userReport is string
+        && data.userReport.size() >= 1
+        && data.userReport.size() <= 600
+        && data.classification is string
+        && data.classification.size() >= 1
+        && data.classification.size() <= 24
+        && data.classification in ['impulso', 'suprimento', 'comum']
+        && data.categoryLabel is string
+        && data.categoryLabel.size() >= 1
+        && data.categoryLabel.size() <= 80
+        && data.itemDescription is string
+        && data.itemDescription.size() >= 1
+        && data.itemDescription.size() <= 160
+        && isNonNegNumber(data.amount, 1000000000)
+        && data.xpDelta is int
+        && data.xpDelta >= -10000
+        && data.xpDelta <= 10000
+        && data.streakReset is bool
+        && data.tacticalReply is string
+        && data.tacticalReply.size() >= 1
+        && data.tacticalReply.size() <= 1000
+        && data.dateIso is string
+        && data.dateIso.size() >= 10
+        && data.dateIso.size() <= 40
+        && data.createdAt is timestamp;
+    }
+
+    function isValidMissionEntry(data, userId) {
+      return data.keys().hasAll([
+          'ownerId', 'module', 'title', 'detail', 'dateStr',
+          'timeStr', 'completed', 'createdAtIso', 'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerId', 'module', 'title', 'detail', 'dateStr',
+          'timeStr', 'completed', 'createdAtIso', 'createdAt'
+        ])
+        && data.ownerId is string
+        && data.ownerId == userId
+        && isValidId(data.ownerId)
+        && data.module is string
+        && data.module.size() >= 1
+        && data.module.size() <= 24
+        && data.module in ['exam', 'pm_shift', 'workout', 'mesc_shift']
+        && data.title is string
+        && data.title.size() >= 1
+        && data.title.size() <= 160
+        && data.detail is string
+        && data.detail.size() >= 1
+        && data.detail.size() <= 240
+        && data.dateStr is string
+        && data.dateStr.size() >= 4
+        && data.dateStr.size() <= 16
+        && data.timeStr is string
+        && data.timeStr.size() <= 16
+        && data.completed is bool
+        && data.createdAtIso is string
+        && data.createdAtIso.size() >= 10
+        && data.createdAtIso.size() <= 40
+        && data.createdAt is timestamp;
+    }
+
+    function isValidMarriageCouple(data, userId) {
+      return data.keys().hasAll([
+          'ownerId', 'coupleNames', 'scheduledDate', 'scheduledTime',
+          'topic', 'notes', 'status', 'createdAtIso', 'updatedAtIso',
+          'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerId', 'coupleNames', 'scheduledDate', 'scheduledTime',
+          'topic', 'notes', 'status', 'createdAtIso', 'updatedAtIso',
+          'createdAt', 'updatedAt'
+        ])
+        && data.ownerId is string
+        && data.ownerId == userId
+        && isValidId(data.ownerId)
+        && data.coupleNames is string
+        && data.coupleNames.size() >= 1
+        && data.coupleNames.size() <= 120
+        && data.scheduledDate is string
+        && data.scheduledDate.size() <= 16
+        && data.scheduledTime is string
+        && data.scheduledTime.size() <= 16
+        && data.topic is string
+        && data.topic.size() <= 160
+        && data.notes is string
+        && data.notes.size() <= 1500
+        && data.status is string
+        && data.status.size() >= 1
+        && data.status.size() <= 32
+        && data.status in ['aguardando_data', 'em_andamento', 'encontro_concluido']
+        && data.createdAtIso is string
+        && data.createdAtIso.size() >= 10
+        && data.createdAtIso.size() <= 40
+        && data.updatedAtIso is string
+        && data.updatedAtIso.size() >= 10
+        && data.updatedAtIso.size() <= 40
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidReadingLog(data, userId) {
+      return data.keys().hasAll([
+          'ownerId', 'category', 'title', 'authorOrSource', 'pagesOrMinutes',
+          'notes', 'dateStr', 'completed', 'xpGranted', 'createdAtIso', 'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerId', 'category', 'title', 'authorOrSource', 'pagesOrMinutes',
+          'notes', 'dateStr', 'completed', 'xpGranted', 'createdAtIso', 'createdAt'
+        ])
+        && data.ownerId is string
+        && data.ownerId == userId
+        && isValidId(data.ownerId)
+        && data.category is string
+        && data.category.size() >= 1
+        && data.category.size() <= 24
+        && data.category in ['espiritual', 'literatura', 'tcc', 'direito']
+        && data.title is string
+        && data.title.size() >= 1
+        && data.title.size() <= 160
+        && data.authorOrSource is string
+        && data.authorOrSource.size() <= 120
+        && isNonNegNumber(data.pagesOrMinutes, 100000)
+        && data.notes is string
+        && data.notes.size() <= 800
+        && data.dateStr is string
+        && data.dateStr.size() >= 4
+        && data.dateStr.size() <= 16
+        && data.completed is bool
+        && data.xpGranted is int
+        && data.xpGranted >= 0
+        && data.xpGranted <= 5000
+        && data.createdAtIso is string
+        && data.createdAtIso.size() >= 10
+        && data.createdAtIso.size() <= 40
+        && data.createdAt is timestamp;
+    }
+
+    function isValidMedicalExam(data, userId) {
+      return data.keys().hasAll([
+          'ownerId', 'examType', 'examLabel', 'examDate', 'resultSummary',
+          'metricsDetail', 'status', 'notes', 'createdAtIso', 'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerId', 'examType', 'examLabel', 'examDate', 'resultSummary',
+          'metricsDetail', 'status', 'notes', 'createdAtIso', 'createdAt'
+        ])
+        && data.ownerId is string
+        && data.ownerId == userId
+        && isValidId(data.ownerId)
+        && data.examType is string
+        && data.examType.size() >= 1
+        && data.examType.size() <= 32
+        && data.examType in ['holter', 'ecocardiograma', 'perfil_lipidico', 'hemograma', 'outro']
+        && data.examLabel is string
+        && data.examLabel.size() >= 1
+        && data.examLabel.size() <= 120
+        && data.examDate is string
+        && data.examDate.size() >= 4
+        && data.examDate.size() <= 16
+        && data.resultSummary is string
+        && data.resultSummary.size() >= 1
+        && data.resultSummary.size() <= 240
+        && data.metricsDetail is string
+        && data.metricsDetail.size() <= 800
+        && data.status is string
+        && data.status.size() >= 1
+        && data.status.size() <= 24
+        && data.status in ['otimo', 'acompanhar', 'atencao']
+        && data.notes is string
+        && data.notes.size() <= 800
+        && data.createdAtIso is string
+        && data.createdAtIso.size() >= 10
+        && data.createdAtIso.size() <= 40
+        && data.createdAt is timestamp;
+    }
+
+    function isValidSpiritualLog(data, userId) {
+      return data.keys().hasAll([
+          'ownerId', 'actType', 'actLabel', 'dateStr', 'notes',
+          'baseXp', 'multiplierApplied', 'xpGranted', 'createdAtIso', 'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerId', 'actType', 'actLabel', 'dateStr', 'notes',
+          'baseXp', 'multiplierApplied', 'xpGranted', 'createdAtIso', 'createdAt'
+        ])
+        && data.ownerId is string
+        && data.ownerId == userId
+        && isValidId(data.ownerId)
+        && data.actType is string
+        && data.actType.size() >= 1
+        && data.actType.size() <= 32
+        && data.actType in [
+          'manha_noite',
+          'dezena',
+          'lectio_divina',
+          'novena_sao_jose',
+          'comunhao',
+          'adoracao',
+          'terco_completo',
+          'santa_missa',
+          'confissao'
+        ]
+        && data.actLabel is string
+        && data.actLabel.size() >= 1
+        && data.actLabel.size() <= 120
+        && data.dateStr is string
+        && data.dateStr.size() >= 4
+        && data.dateStr.size() <= 16
+        && data.notes is string
+        && data.notes.size() <= 800
+        && data.baseXp is int
+        && data.baseXp >= 0
+        && data.baseXp <= 5000
+        && (data.multiplierApplied is int || data.multiplierApplied is float)
+        && data.multiplierApplied >= 1
+        && data.multiplierApplied <= 5
+        && data.xpGranted is int
+        && data.xpGranted >= 0
+        && data.xpGranted <= 10000
+        && data.createdAtIso is string
+        && data.createdAtIso.size() >= 10
+        && data.createdAtIso.size() <= 40
+        && data.createdAt is timestamp;
+    }
+
+    // =========================================================================
+    // 4. Regras das Coleções
+    // =========================================================================
+    match /fortresses/{userId} {
+      allow get: if isValidId(userId) && isOwner(userId);
+      allow list: if isSignedIn() && existing().ownerId == request.auth.uid;
+
+      allow create: if isValidId(userId)
+        && isOwner(userId)
+        && isValidFortressState(incoming(), userId)
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isValidId(userId)
+        && isOwner(userId)
+        && isValidFortressState(incoming(), userId)
+        && incoming().ownerId == existing().ownerId
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'box1', 'box2', 'box3', 'box4', 'currentCarValue',
+            'xp', 'xpHistory', 'cdiTotal', 'unlockedMilestones', 'updatedAt'
+          ]) ||
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'xp', 'xpHistory', 'streak', 'arenaWins', 'oracleIdx', 'rosaryDecades',
+            'rosaryCompleted', 'providerDuties', 'feudChecklist', 'spiritual', 'updatedAt'
+          ]) ||
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'vocational', 'xp', 'xpHistory', 'updatedAt'
+          ]) ||
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'spiritual', 'xp', 'xpHistory', 'rosaryDecades', 'rosaryCompleted', 'updatedAt'
+          ]) ||
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'activeTab', 'soundEnabled', 'updatedAt'
+          ]) ||
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'box1', 'box2', 'box3', 'box4', 'currentCarValue',
+            'xp', 'xpHistory', 'streak', 'arenaWins', 'activeTab', 'oracleIdx',
+            'rosaryDecades', 'rosaryCompleted', 'providerDuties', 'cdiTotal',
+            'unlockedMilestones', 'feudChecklist', 'soundEnabled', 'spiritual',
+            'vocational', 'updatedAt'
+          ])
+        );
+
+      allow delete: if isValidId(userId) && isOwner(userId);
+
+      match /transactions/{transactionId} {
+        allow get: if isValidId(userId) && isValidId(transactionId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow list: if isOwner(userId) && existing().ownerId == request.auth.uid;
+
+        allow create: if isValidId(userId) && isValidId(transactionId)
+          && isOwner(userId)
+          && isValidTransaction(incoming(), userId)
+          && incoming().createdAt == request.time
+          && getAfter(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow update: if false;
+
+        allow delete: if isValidId(userId) && isValidId(transactionId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+      }
+
+      match /letters/{letterId} {
+        allow get: if isValidId(userId) && isValidId(letterId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow list: if isOwner(userId) && existing().ownerId == request.auth.uid;
+
+        allow create: if isValidId(userId) && isValidId(letterId)
+          && isOwner(userId)
+          && isValidLetter(incoming(), userId)
+          && incoming().createdAt == request.time
+          && getAfter(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow update: if false;
+
+        allow delete: if isValidId(userId) && isValidId(letterId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+      }
+
+      match /recurringCosts/{costId} {
+        allow get: if isValidId(userId) && isValidId(costId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow list: if isOwner(userId) && existing().ownerId == request.auth.uid;
+
+        allow create: if isValidId(userId) && isValidId(costId)
+          && isOwner(userId)
+          && isValidRecurringCost(incoming(), userId)
+          && incoming().createdAt == request.time
+          && getAfter(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow update: if isValidId(userId) && isValidId(costId)
+          && isOwner(userId)
+          && isValidRecurringCost(incoming(), userId)
+          && incoming().ownerId == existing().ownerId
+          && incoming().createdAt == existing().createdAt
+          && incoming().diff(existing()).affectedKeys().hasOnly(['active']);
+
+        allow delete: if isValidId(userId) && isValidId(costId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+      }
+
+      match /tacticalExpenses/{expenseId} {
+        allow get: if isValidId(userId) && isValidId(expenseId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow list: if isOwner(userId) && existing().ownerId == request.auth.uid;
+
+        allow create: if isValidId(userId) && isValidId(expenseId)
+          && isOwner(userId)
+          && isValidTacticalExpense(incoming(), userId)
+          && incoming().createdAt == request.time
+          && getAfter(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow update: if false;
+
+        allow delete: if isValidId(userId) && isValidId(expenseId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+      }
+
+      match /missionEntries/{entryId} {
+        allow get: if isValidId(userId) && isValidId(entryId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow list: if isOwner(userId) && existing().ownerId == request.auth.uid;
+
+        allow create: if isValidId(userId) && isValidId(entryId)
+          && isOwner(userId)
+          && isValidMissionEntry(incoming(), userId)
+          && incoming().createdAt == request.time
+          && getAfter(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow update: if isValidId(userId) && isValidId(entryId)
+          && isOwner(userId)
+          && isValidMissionEntry(incoming(), userId)
+          && incoming().ownerId == existing().ownerId
+          && incoming().createdAt == existing().createdAt
+          && incoming().diff(existing()).affectedKeys().hasOnly(['completed']);
+
+        allow delete: if isValidId(userId) && isValidId(entryId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+      }
+
+      match /marriageCouples/{coupleId} {
+        allow get: if isValidId(userId) && isValidId(coupleId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow list: if isOwner(userId) && existing().ownerId == request.auth.uid;
+
+        allow create: if isValidId(userId) && isValidId(coupleId)
+          && isOwner(userId)
+          && isValidMarriageCouple(incoming(), userId)
+          && incoming().createdAt == request.time
+          && incoming().updatedAt == request.time
+          && getAfter(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow update: if isValidId(userId) && isValidId(coupleId)
+          && isOwner(userId)
+          && isValidMarriageCouple(incoming(), userId)
+          && incoming().ownerId == existing().ownerId
+          && incoming().createdAt == existing().createdAt
+          && incoming().createdAtIso == existing().createdAtIso
+          && incoming().updatedAt == request.time
+          && incoming().diff(existing()).affectedKeys().hasOnly([
+            'coupleNames',
+            'scheduledDate',
+            'scheduledTime',
+            'topic',
+            'notes',
+            'status',
+            'updatedAtIso',
+            'updatedAt'
+          ]);
+
+        allow delete: if isValidId(userId) && isValidId(coupleId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+      }
+
+      match /readingLogs/{logId} {
+        allow get: if isValidId(userId) && isValidId(logId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow list: if isOwner(userId) && existing().ownerId == request.auth.uid;
+
+        allow create: if isValidId(userId) && isValidId(logId)
+          && isOwner(userId)
+          && isValidReadingLog(incoming(), userId)
+          && incoming().createdAt == request.time
+          && getAfter(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow update: if isValidId(userId) && isValidId(logId)
+          && isOwner(userId)
+          && isValidReadingLog(incoming(), userId)
+          && incoming().ownerId == existing().ownerId
+          && incoming().createdAt == existing().createdAt
+          && incoming().createdAtIso == existing().createdAtIso
+          && incoming().diff(existing()).affectedKeys().hasOnly([
+            'completed',
+            'xpGranted',
+            'pagesOrMinutes',
+            'notes'
+          ]);
+
+        allow delete: if isValidId(userId) && isValidId(logId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+      }
+
+      match /medicalExams/{examId} {
+        allow get: if isValidId(userId) && isValidId(examId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow list: if isOwner(userId) && existing().ownerId == request.auth.uid;
+
+        allow create: if isValidId(userId) && isValidId(examId)
+          && isOwner(userId)
+          && isValidMedicalExam(incoming(), userId)
+          && incoming().createdAt == request.time
+          && getAfter(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow update: if isValidId(userId) && isValidId(examId)
+          && isOwner(userId)
+          && isValidMedicalExam(incoming(), userId)
+          && incoming().ownerId == existing().ownerId
+          && incoming().createdAt == existing().createdAt
+          && incoming().createdAtIso == existing().createdAtIso
+          && incoming().diff(existing()).affectedKeys().hasOnly([
+            'examDate',
+            'resultSummary',
+            'metricsDetail',
+            'status',
+            'notes'
+          ]);
+
+        allow delete: if isValidId(userId) && isValidId(examId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+      }
+
+      match /spiritualLogs/{logId} {
+        allow get: if isValidId(userId) && isValidId(logId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow list: if isOwner(userId) && existing().ownerId == request.auth.uid;
+
+        allow create: if isValidId(userId) && isValidId(logId)
+          && isOwner(userId)
+          && isValidSpiritualLog(incoming(), userId)
+          && incoming().createdAt == request.time
+          && getAfter(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+
+        allow update: if false;
+
+        allow delete: if isValidId(userId) && isValidId(logId)
+          && isOwner(userId)
+          && get(/databases/$(database)/documents/fortresses/$(userId)).data.ownerId == request.auth.uid;
+      }
+    }
+  }
+}

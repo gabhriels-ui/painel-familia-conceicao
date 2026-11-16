@@ -1,0 +1,435 @@
+{
+  "entities": {
+    "FortressState": {
+      "title": "FortressState",
+      "description": "Estado principal do progresso financeiro, espiritual e de RPG da Fortaleza Família Conceição.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "description": "UID do usuário autenticado proprietário da fortaleza",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "box1": { "type": "number", "description": "Saldo da Arca I (Cartão Mercado Pago)" },
+        "box2": { "type": "number", "description": "Saldo da Arca II (Muralha da Família)" },
+        "box3": { "type": "number", "description": "Saldo da Arca III (Corolla XEi 2017)" },
+        "box4": { "type": "number", "description": "Saldo da Arca IV (Legado & IPCA+)" },
+        "currentCarValue": { "type": "number", "description": "Valor base do veículo atual" },
+        "xp": { "type": "number", "description": "Experiência acumulada" },
+        "streak": { "type": "number", "description": "Vitórias no escudo de 60s" },
+        "arenaWins": { "type": "number", "description": "Chefes derrotados na Arena" },
+        "activeTab": {
+          "type": "string",
+          "enum": ["comando", "rota", "corolla", "provedor", "cronicas"],
+          "maxLength": 32
+        },
+        "oracleIdx": { "type": "number" },
+        "rosaryDecades": { "type": "number" },
+        "rosaryCompleted": { "type": "number" },
+        "cdiTotal": { "type": "number" },
+        "soundEnabled": { "type": "boolean" },
+        "providerDuties": { "type": "object" },
+        "unlockedMilestones": { "type": "object" },
+        "feudChecklist": { "type": "object" },
+        "xpHistory": {
+          "type": "object",
+          "description": "Mapa limitado dos últimos 40 dias de ganho diário de XP (YYYY-MM-DD)."
+        },
+        "spiritual": {
+          "type": "object",
+          "description": "Estado da Força Espiritual & Graça (XP espiritual, datas de última oração/vigília, Novena de São José, metas diárias e pmDutyDate do Modo Plantão PMSE)."
+        },
+        "vocational": {
+          "type": "object",
+          "description": "Estado estruturado do Arsenal Jurídico (AGES), Quartel (2ª Cia/11º BPM), Mente & Conexões (brainXp), Fortaleza Corporal (bodyXp) e Creatina."
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "ownerId",
+        "box1",
+        "box2",
+        "box3",
+        "box4",
+        "currentCarValue",
+        "xp",
+        "streak",
+        "arenaWins",
+        "activeTab",
+        "oracleIdx",
+        "rosaryDecades",
+        "rosaryCompleted",
+        "cdiTotal",
+        "soundEnabled",
+        "providerDuties",
+        "unlockedMilestones",
+        "feudChecklist",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "TransactionDoc": {
+      "title": "TransactionDoc",
+      "description": "Registro individual de movimentação financeira nas Arcas ou colheita CDI.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "vaultId": { "type": "string", "description": "Identificador da Arca (1, 2, 3, 4 ou cdi)" },
+        "vaultName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "previousValue": { "type": "number" },
+        "newValue": { "type": "number" },
+        "difference": { "type": "number" },
+        "dateIso": { "type": "string", "minLength": 10, "maxLength": 40 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "ownerId",
+        "vaultId",
+        "vaultName",
+        "previousValue",
+        "newValue",
+        "difference",
+        "dateIso",
+        "createdAt"
+      ]
+    },
+    "LetterDoc": {
+      "title": "LetterDoc",
+      "description": "Pergaminho lacrado na cápsula do tempo para 2027.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "body": { "type": "string", "minLength": 1, "maxLength": 5000 },
+        "date": { "type": "string", "minLength": 4, "maxLength": 32 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerId", "title", "body", "date", "createdAt"]
+    },
+    "RecurringCostDoc": {
+      "title": "RecurringCostDoc",
+      "description": "Gasto recorrente cadastrado na Vigília de Custos para monitorar impacto na Arca I.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "amount": { "type": "number" },
+        "category": {
+          "type": "string",
+          "enum": ["mercado", "educacao", "lar", "transporte", "outros"],
+          "maxLength": 24
+        },
+        "dueDay": { "type": "number" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerId", "name", "amount", "category", "dueDay", "active", "createdAt"]
+    },
+    "TacticalExpenseDoc": {
+      "title": "TacticalExpenseDoc",
+      "description": "Registro classificado pela IA tática de gastos diários e impacto operacional/XP.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "userReport": { "type": "string", "minLength": 1, "maxLength": 600 },
+        "classification": {
+          "type": "string",
+          "enum": ["impulso", "suprimento", "comum"],
+          "maxLength": 24
+        },
+        "categoryLabel": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "itemDescription": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "amount": { "type": "number" },
+        "xpDelta": { "type": "number" },
+        "streakReset": { "type": "boolean" },
+        "tacticalReply": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "dateIso": { "type": "string", "minLength": 10, "maxLength": 40 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "ownerId",
+        "userReport",
+        "classification",
+        "categoryLabel",
+        "itemDescription",
+        "amount",
+        "xpDelta",
+        "streakReset",
+        "tacticalReply",
+        "dateIso",
+        "createdAt"
+      ]
+    },
+    "MissionEntryDoc": {
+      "title": "MissionEntryDoc",
+      "description": "Registro de prova acadêmica, plantão policial, treino calistênico ou escala litúrgica MESC.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "module": {
+          "type": "string",
+          "enum": ["exam", "pm_shift", "workout", "mesc_shift"],
+          "maxLength": 24
+        },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "detail": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "dateStr": { "type": "string", "minLength": 4, "maxLength": 16 },
+        "timeStr": { "type": "string", "maxLength": 16 },
+        "completed": { "type": "boolean" },
+        "createdAtIso": { "type": "string", "minLength": 10, "maxLength": 40 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "ownerId",
+        "module",
+        "title",
+        "detail",
+        "dateStr",
+        "timeStr",
+        "completed",
+        "createdAtIso",
+        "createdAt"
+      ]
+    },
+    "MarriageCoupleDoc": {
+      "title": "MarriageCoupleDoc",
+      "description": "Casal acompanhado na Pastoral de Preparação ao Matrimônio com data editável, anotações de progresso e status.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "coupleNames": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "scheduledDate": { "type": "string", "maxLength": 16 },
+        "scheduledTime": { "type": "string", "maxLength": 16 },
+        "topic": { "type": "string", "maxLength": 160 },
+        "notes": { "type": "string", "maxLength": 1500 },
+        "status": {
+          "type": "string",
+          "enum": ["aguardando_data", "em_andamento", "encontro_concluido"],
+          "maxLength": 32
+        },
+        "createdAtIso": { "type": "string", "minLength": 10, "maxLength": 40 },
+        "updatedAtIso": { "type": "string", "minLength": 10, "maxLength": 40 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "ownerId",
+        "coupleNames",
+        "scheduledDate",
+        "scheduledTime",
+        "topic",
+        "notes",
+        "status",
+        "createdAtIso",
+        "updatedAtIso",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ReadingLogDoc": {
+      "title": "ReadingLogDoc",
+      "description": "Registro de leitura no módulo Mente & Conexões (Espiritual, Literatura, TCC, Direito AGES/Concursos) com XP cerebral.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["espiritual", "literatura", "tcc", "direito"],
+          "maxLength": 24
+        },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "authorOrSource": { "type": "string", "maxLength": 120 },
+        "pagesOrMinutes": { "type": "number" },
+        "notes": { "type": "string", "maxLength": 800 },
+        "dateStr": { "type": "string", "minLength": 4, "maxLength": 16 },
+        "completed": { "type": "boolean" },
+        "xpGranted": { "type": "number" },
+        "createdAtIso": { "type": "string", "minLength": 10, "maxLength": 40 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "ownerId",
+        "category",
+        "title",
+        "authorOrSource",
+        "pagesOrMinutes",
+        "notes",
+        "dateStr",
+        "completed",
+        "xpGranted",
+        "createdAtIso",
+        "createdAt"
+      ]
+    },
+    "MedicalExamDoc": {
+      "title": "MedicalExamDoc",
+      "description": "Registro clínico de exame recente (Holter 24h, Ecocardiograma, Perfil Lipídico, Hemograma) na Fortaleza Corporal.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "examType": {
+          "type": "string",
+          "enum": ["holter", "ecocardiograma", "perfil_lipidico", "hemograma", "outro"],
+          "maxLength": 32
+        },
+        "examLabel": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "examDate": { "type": "string", "minLength": 4, "maxLength": 16 },
+        "resultSummary": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "metricsDetail": { "type": "string", "maxLength": 800 },
+        "status": {
+          "type": "string",
+          "enum": ["otimo", "acompanhar", "atencao"],
+          "maxLength": 24
+        },
+        "notes": { "type": "string", "maxLength": 800 },
+        "createdAtIso": { "type": "string", "minLength": 10, "maxLength": 40 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "ownerId",
+        "examType",
+        "examLabel",
+        "examDate",
+        "resultSummary",
+        "metricsDetail",
+        "status",
+        "notes",
+        "createdAtIso",
+        "createdAt"
+      ]
+    },
+    "SpiritualLogDoc": {
+      "title": "SpiritualLogDoc",
+      "description": "Registro de ato de piedade, oração diária, Lectio Divina, Novena de São José ou sacramento no Módulo Espiritual.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "actType": {
+          "type": "string",
+          "enum": [
+            "manha_noite",
+            "dezena",
+            "lectio_divina",
+            "novena_sao_jose",
+            "comunhao",
+            "adoracao",
+            "terco_completo",
+            "santa_missa",
+            "confissao"
+          ],
+          "maxLength": 32
+        },
+        "actLabel": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "dateStr": { "type": "string", "minLength": 4, "maxLength": 16 },
+        "notes": { "type": "string", "maxLength": 800 },
+        "baseXp": { "type": "number" },
+        "multiplierApplied": { "type": "number" },
+        "xpGranted": { "type": "number" },
+        "createdAtIso": { "type": "string", "minLength": 10, "maxLength": 40 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "ownerId",
+        "actType",
+        "actLabel",
+        "dateStr",
+        "notes",
+        "baseXp",
+        "multiplierApplied",
+        "xpGranted",
+        "createdAtIso",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/fortresses/{userId}": {
+      "schema": { "$ref": "#/entities/FortressState" },
+      "description": "Documento principal sincronizado de cada Comandante autenticado."
+    },
+    "/fortresses/{userId}/transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/TransactionDoc" },
+      "description": "Subcoleção do extrato de movimentações das Arcas e colheitas CDI."
+    },
+    "/fortresses/{userId}/letters/{letterId}": {
+      "schema": { "$ref": "#/entities/LetterDoc" },
+      "description": "Subcoleção dos pergaminhos lacrados para o herdeiro em 2027."
+    },
+    "/fortresses/{userId}/recurringCosts/{costId}": {
+      "schema": { "$ref": "#/entities/RecurringCostDoc" },
+      "description": "Subcoleção de gastos recorrentes da Vigília de Custos."
+    },
+    "/fortresses/{userId}/tacticalExpenses/{expenseId}": {
+      "schema": { "$ref": "#/entities/TacticalExpenseDoc" },
+      "description": "Subcoleção de relatórios diários classificados pelo chat de Inteligência Tática."
+    },
+    "/fortresses/{userId}/missionEntries/{entryId}": {
+      "schema": { "$ref": "#/entities/MissionEntryDoc" },
+      "description": "Subcoleção de provas acadêmicas (AGES), plantões PMSE, treinos de calistenia e escalas litúrgicas MESC."
+    },
+    "/fortresses/{userId}/marriageCouples/{coupleId}": {
+      "schema": { "$ref": "#/entities/MarriageCoupleDoc" },
+      "description": "Subcoleção de casais acompanhados na Pastoral de Preparação ao Matrimônio, sincronizada com o Calendário Tático."
+    },
+    "/fortresses/{userId}/readingLogs/{logId}": {
+      "schema": { "$ref": "#/entities/ReadingLogDoc" },
+      "description": "Subcoleção de leituras e estudos do módulo Mente & Conexões."
+    },
+    "/fortresses/{userId}/medicalExams/{examId}": {
+      "schema": { "$ref": "#/entities/MedicalExamDoc" },
+      "description": "Subcoleção de exames médicos recentes (Holter, Ecocardiograma, Perfil Lipídico, Hemograma)."
+    },
+    "/fortresses/{userId}/spiritualLogs/{logId}": {
+      "schema": { "$ref": "#/entities/SpiritualLogDoc" },
+      "description": "Subcoleção de atos espirituais, orações, novenas e sacramentos da Vigília da Alma."
+    }
+  }
+}

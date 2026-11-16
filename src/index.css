@@ -1,0 +1,2093 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg-steel: #0d0b09;
+  --bg-steel-elevated: #16110e;
+  --oak-dark: #1a120c;
+  --oak-plank: #241810;
+  --oak-bevel: #3a2618;
+  --iron-plate: #1c2026;
+  --iron-plate-deep: #111317;
+  --iron-blackened: #0b0c0f;
+  --leather-worn: #1d140e;
+  --leather-dark: #110b08;
+  --gold-aged: #eab308;
+  --gold-bright: #fde047;
+  --bronze-oxidized: #855e21;
+  --crimson-imperial: #881b1b;
+  --crimson-dark: #450a0a;
+  --parchment: #efe3c8;
+  --parchment-muted: #a89982;
+  --iron-border: rgba(162, 172, 186, 0.18);
+  --gold-border: rgba(234, 179, 8, 0.36);
+  --iron-highlight: rgba(255, 240, 200, 0.1);
+}
+
+@layer base {
+  html,
+  body {
+    background-color: var(--bg-steel);
+    color: var(--parchment);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.55;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-image:
+      radial-gradient(ellipse at 50% -8%, rgba(234, 179, 8, 0.11) 0%, transparent 52%),
+      radial-gradient(circle at 12% 86%, rgba(136, 27, 27, 0.15) 0%, transparent 44%),
+      radial-gradient(circle at 88% 74%, rgba(30, 58, 138, 0.09) 0%, transparent 45%),
+      repeating-linear-gradient(
+        90deg,
+        rgba(64, 42, 24, 0.09) 0px,
+        rgba(64, 42, 24, 0.09) 1px,
+        transparent 1px,
+        transparent 44px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.01) 0px,
+        rgba(255, 255, 255, 0.01) 1px,
+        transparent 1px,
+        transparent 7px
+      );
+  }
+}
+
+.war-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 52%,
+    rgba(8, 6, 4, 0.56) 82%,
+    rgba(4, 3, 2, 0.92) 100%
+  );
+}
+
+@keyframes watchTorchPulse {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 65px rgba(180, 83, 9, 0.32),
+      inset 0 0 130px rgba(127, 29, 29, 0.38);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 95px rgba(234, 179, 8, 0.52),
+      inset 0 0 175px rgba(153, 27, 27, 0.52);
+  }
+}
+
+.siege-watch-vignette {
+  animation: watchTorchPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes enemyFrontFlash {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 80px rgba(153, 27, 27, 0.36),
+      inset 0 0 180px rgba(69, 10, 10, 0.45);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 130px rgba(220, 38, 38, 0.72),
+      inset 0 0 240px rgba(127, 29, 29, 0.75);
+  }
+}
+
+.enemy-front-vignette {
+  animation: enemyFrontFlash 0.9s ease-in-out infinite;
+}
+
+/* Títulos de Guerra em Rajdhani Imponente */
+.font-epic {
+  font-family: 'Rajdhani', 'Cinzel', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.055em;
+}
+
+/* Finanças, Métricas e Datas em Inter com Números Tabulares Rígidos */
+.font-mono-num {
+  font-family: 'Inter', 'JetBrains Mono', ui-sans-serif, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1, 'zero' 1;
+}
+
+/* Placa Física de Carvalho Escuro, Ferro Enegrecido, Aço Escovado e Rebites Dourados */
+.rpg-panel {
+  background:
+    radial-gradient(circle at 12px 12px, rgba(234, 179, 8, 0.6) 0px, rgba(72, 52, 24, 0.85) 2.2px, transparent 4px),
+    radial-gradient(circle at calc(100% - 12px) 12px, rgba(234, 179, 8, 0.6) 0px, rgba(72, 52, 24, 0.85) 2.2px, transparent 4px),
+    radial-gradient(circle at 12px calc(100% - 12px), rgba(234, 179, 8, 0.6) 0px, rgba(72, 52, 24, 0.85) 2.2px, transparent 4px),
+    radial-gradient(circle at calc(100% - 12px) calc(100% - 12px), rgba(234, 179, 8, 0.6) 0px, rgba(72, 52, 24, 0.85) 2.2px, transparent 4px),
+    radial-gradient(circle at 50% 0%, rgba(234, 179, 8, 0.075), transparent 56%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.012) 0px,
+      rgba(255, 255, 255, 0.012) 1px,
+      transparent 1px,
+      transparent 18px
+    ),
+    linear-gradient(172deg, #211812 0%, #17191e 48%, #0f1114 100%);
+  border: 1px solid rgba(168, 134, 62, 0.34);
+  box-shadow:
+    0 5px 0 #090705,
+    0 18px 40px rgba(0, 0, 0, 0.72),
+    inset 0 1px 0 rgba(253, 224, 71, 0.2),
+    inset 0 0 0 3px rgba(10, 8, 6, 0.55);
+  border-radius: 12px;
+  position: relative;
+}
+
+/* Entalhe rúnico discreto nos cantos superiores */
+.rpg-panel::after {
+  content: 'ᛟ';
+  position: absolute;
+  top: 7px;
+  right: 22px;
+  font-size: 9px;
+  line-height: 1;
+  color: rgba(234, 179, 8, 0.24);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Alcova Espiritual da Tenda Real (Carvalho Entalhado + Vitral Dourado) */
+.cathedral-glass {
+  background:
+    radial-gradient(circle at 12px 12px, rgba(253, 224, 71, 0.68) 0px, rgba(112, 74, 18, 0.85) 2.2px, transparent 4px),
+    radial-gradient(circle at calc(100% - 12px) 12px, rgba(253, 224, 71, 0.68) 0px, rgba(112, 74, 18, 0.85) 2.2px, transparent 4px),
+    radial-gradient(circle at 12px calc(100% - 12px), rgba(253, 224, 71, 0.68) 0px, rgba(112, 74, 18, 0.85) 2.2px, transparent 4px),
+    radial-gradient(circle at calc(100% - 12px) calc(100% - 12px), rgba(253, 224, 71, 0.68) 0px, rgba(112, 74, 18, 0.85) 2.2px, transparent 4px),
+    radial-gradient(circle at 16% 18%, rgba(30, 58, 138, 0.24), transparent 54%),
+    radial-gradient(circle at 84% 82%, rgba(136, 27, 27, 0.26), transparent 55%),
+    linear-gradient(166deg, #271b13 0%, #18110c 58%, #0f0b08 100%);
+  border: 1px solid var(--gold-border);
+  box-shadow:
+    0 5px 0 #0b0705,
+    0 18px 42px rgba(0, 0, 0, 0.76),
+    inset 0 1px 0 rgba(253, 224, 71, 0.24),
+    inset 0 0 0 3px rgba(14, 9, 5, 0.55);
+  border-radius: 12px;
+  position: relative;
+}
+
+/* Pergaminho Envelhecido & Sub-Placa de Carvalho/Ferro */
+.parchment-box {
+  background:
+    radial-gradient(circle at 24% 0%, rgba(234, 179, 8, 0.06), transparent 60%),
+    radial-gradient(circle at 86% 100%, rgba(120, 53, 15, 0.08), transparent 55%),
+    linear-gradient(176deg, #201811 0%, #171310 60%, #12100e 100%);
+  border: 1px solid rgba(234, 179, 8, 0.24);
+  box-shadow:
+    0 3px 0 rgba(8, 6, 4, 0.85),
+    inset 0 1px 0 rgba(253, 224, 71, 0.12),
+    inset 0 0 18px rgba(0, 0, 0, 0.35);
+  border-radius: 8px;
+}
+
+/* Palco 3D Global (1200px) e Placas Físicas com Relevo de Ferro, Madeira e Ouro */
+.hud-3d-stage {
+  perspective: 1200px;
+  perspective-origin: 50% 24%;
+}
+
+.state-card {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform, box-shadow;
+  transform: perspective(1200px) rotateX(var(--tilt-rx, 0deg)) rotateY(var(--tilt-ry, 0deg));
+  box-shadow:
+    0 4px 0 #090705,
+    var(--tilt-shadow-x, 0px) var(--tilt-shadow-y, 20px) 42px rgba(0, 0, 0, 0.78),
+    calc(var(--tilt-shadow-x, 0px) * 0.45) calc(var(--tilt-shadow-y, 20px) * 0.35) 28px rgba(234, 179, 8, var(--rim-glow, 0.12)),
+    inset 0 1px 0 rgba(253, 224, 71, 0.24),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.65);
+  transition:
+    transform 0.44s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.44s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s ease;
+}
+
+.state-card[data-tilting='true'] {
+  transition:
+    transform 0.065s linear,
+    box-shadow 0.065s linear,
+    border-color 0.15s ease;
+}
+
+.state-card:active:not([data-tilt-subtle='true']) {
+  transform: perspective(1200px) rotateX(var(--tilt-rx, 0deg)) rotateY(var(--tilt-ry, 0deg)) scale3d(0.986, 0.986, 1);
+}
+
+.state-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(234, 179, 8, 0.13) 0%, rgba(234, 179, 8, 0.03) 26%, transparent 56%),
+    radial-gradient(
+      circle at var(--glare-x, 50%) var(--glare-y, 12%),
+      rgba(253, 224, 71, var(--glare-opacity, 0.11)) 0%,
+      rgba(234, 179, 8, 0.035) 40%,
+      transparent 74%
+    );
+  transition: opacity 0.25s ease;
+}
+
+/* Relevo Épico em 3 Níveis de Profundidade (Base -> Médio -> Primeiro Plano) */
+.depth-layer-1 {
+  transform: translateZ(14px);
+  transform-style: preserve-3d;
+}
+
+.depth-layer-2 {
+  transform: translateZ(28px);
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.45));
+}
+
+.depth-layer-3 {
+  transform: translateZ(46px);
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.65));
+}
+
+/* Impede herança de inclinação do card pai quando o medalhão interno não está sob o ponteiro */
+.state-card .state-card:not([data-tilting='true']) {
+  --tilt-rx: 0deg;
+  --tilt-ry: 0deg;
+  --tilt-shadow-x: 0px;
+  --tilt-shadow-y: 14px;
+  --glare-x: 50%;
+  --glare-y: 12%;
+  --glare-opacity: 0.12;
+  --rim-glow: 0.14;
+}
+
+/* Moldura Oval 3D de Metal Dourado Envelhecido (#eab308) — Retábulo dos Santos */
+.saint-retable-oval {
+  padding: 5px;
+  border-radius: 50% / 44%;
+  background: linear-gradient(
+    142deg,
+    #fef08a 0%,
+    #eab308 24%,
+    #85580f 52%,
+    #facc15 76%,
+    #573706 100%
+  );
+  box-shadow:
+    0 4px 0 #3a2304,
+    0 12px 24px rgba(0, 0, 0, 0.78),
+    inset 0 1px 2px rgba(255, 251, 224, 0.72),
+    inset 0 -2px 4px rgba(34, 20, 2, 0.85);
+}
+
+.saint-retable-oval-inner {
+  border-radius: 50% / 44%;
+  overflow: hidden;
+  border: 2px solid #2b1a07;
+  box-shadow:
+    inset 0 5px 14px rgba(0, 0, 0, 0.88),
+    inset 0 0 0 1px rgba(234, 179, 8, 0.42);
+  background: radial-gradient(circle at 50% 35%, #2a1d11 0%, #120d08 100%);
+}
+
+/* Medalhão Circular 3D de Ferro Batido & Aço Escovado — Casal Conceição */
+.couple-medallion-frame {
+  padding: 4px;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at 50% 8%, rgba(234, 179, 8, 0.45) 0px, transparent 3px),
+    radial-gradient(circle at 50% 92%, rgba(234, 179, 8, 0.45) 0px, transparent 3px),
+    radial-gradient(circle at 8% 50%, rgba(234, 179, 8, 0.45) 0px, transparent 3px),
+    radial-gradient(circle at 92% 50%, rgba(234, 179, 8, 0.45) 0px, transparent 3px),
+    linear-gradient(
+      145deg,
+      #596270 0%,
+      #272c35 32%,
+      #101318 66%,
+      #424956 88%,
+      #161920 100%
+    );
+  border: 1px solid rgba(203, 213, 225, 0.28);
+  box-shadow:
+    0 4px 0 #07080a,
+    0 12px 22px rgba(0, 0, 0, 0.78),
+    inset 0 1px 1px rgba(255, 255, 255, 0.28),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.8);
+}
+
+.couple-medallion-inner {
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 1.5px solid rgba(234, 179, 8, 0.58);
+  box-shadow:
+    inset 0 4px 10px rgba(0, 0, 0, 0.85),
+    0 0 8px rgba(234, 179, 8, 0.16);
+  background: radial-gradient(circle at 50% 35%, #231a13 0%, #0d0b0a 100%);
+}
+
+/* Moldura de Ferro Batido Forjado — Timer Regressivo do Plantão Litúrgico MESC */
+.wrought-iron-timer-frame {
+  position: relative;
+  border-radius: 12px;
+  padding: 6px;
+  background:
+    radial-gradient(circle at 11px 11px, #94a3b8 0px, #475569 1.6px, #090a0d 3.2px, transparent 4.5px),
+    radial-gradient(circle at calc(100% - 11px) 11px, #94a3b8 0px, #475569 1.6px, #090a0d 3.2px, transparent 4.5px),
+    radial-gradient(circle at 11px calc(100% - 11px), #94a3b8 0px, #475569 1.6px, #090a0d 3.2px, transparent 4.5px),
+    radial-gradient(circle at calc(100% - 11px) calc(100% - 11px), #94a3b8 0px, #475569 1.6px, #090a0d 3.2px, transparent 4.5px),
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.025) 0px,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    linear-gradient(
+      152deg,
+      #4e5663 0%,
+      #272c35 28%,
+      #12151a 56%,
+      #343b46 82%,
+      #14171d 100%
+    );
+  border: 1px solid rgba(186, 196, 210, 0.34);
+  box-shadow:
+    0 5px 0 #07080a,
+    0 16px 32px rgba(0, 0, 0, 0.84),
+    inset 0 1px 1px rgba(241, 245, 249, 0.28),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.86);
+}
+
+.wrought-iron-timer-inner {
+  border-radius: 7px;
+  border: 1.5px solid rgba(234, 179, 8, 0.36);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(234, 179, 8, 0.09) 0%, transparent 62%),
+    linear-gradient(180deg, #121419 0%, #0b0c0f 100%);
+  box-shadow:
+    inset 0 4px 14px rgba(0, 0, 0, 0.9),
+    inset 0 0 0 1px rgba(148, 163, 184, 0.14);
+}
+
+.wrought-iron-dial-cell {
+  border-radius: 6px;
+  background: linear-gradient(180deg, #1b1f26 0%, #0f1115 100%);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow:
+    0 2px 0 #050608,
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.72);
+}
+
+/* Estandarte militar com pontas triangulares */
+.war-banner-tab {
+  clip-path: polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%);
+}
+
+.war-banner-crest {
+  clip-path: polygon(0 0, 100% 0, 100% 84%, 50% 100%, 0 84%);
+}
+
+/* Botão de Ouro Envelhecido Forjado (#eab308) */
+.rpg-btn-gold {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #facc15 0%, #eab308 42%, #a16207 100%);
+  color: #120b04;
+  border: 1px solid #fef08a;
+  box-shadow:
+    0 3px 0 #452803,
+    0 6px 16px rgba(0, 0, 0, 0.54),
+    inset 0 1px 0 rgba(255, 251, 224, 0.55);
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.12s ease, filter 0.15s ease;
+}
+
+.rpg-btn-gold::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -80%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 250, 220, 0.45) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-24deg);
+  transition: left 0.5s ease;
+  pointer-events: none;
+}
+
+.rpg-btn-gold:hover:not(:disabled)::after {
+  left: 135%;
+}
+
+.rpg-btn-gold:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 0 #452803,
+    0 8px 20px rgba(0, 0, 0, 0.62),
+    inset 0 1px 0 rgba(255, 250, 220, 0.65);
+}
+
+.rpg-btn-gold:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 #452803,
+    0 2px 6px rgba(0, 0, 0, 0.65),
+    inset 0 2px 4px rgba(0, 0, 0, 0.38);
+}
+
+.rpg-btn-gold:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Botão de Ferro Forjado */
+.rpg-btn-iron {
+  background: linear-gradient(180deg, #2f343d 0%, #20242b 58%, #14171c 100%);
+  color: var(--parchment);
+  border: 1px solid rgba(168, 178, 192, 0.25);
+  box-shadow:
+    0 3px 0 #090a0c,
+    0 5px 12px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 244, 214, 0.1);
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.12s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.rpg-btn-iron:hover:not(:disabled) {
+  border-color: var(--gold-aged);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.rpg-btn-iron:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 #090a0c,
+    0 2px 4px rgba(0, 0, 0, 0.58);
+}
+
+/* Botão Carmesim Imperial */
+.rpg-btn-crimson {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #991b1b 0%, #6b1212 65%, #450909 100%);
+  color: #fcf1ef;
+  border: 1px solid #dc2626;
+  box-shadow:
+    0 3px 0 #2b0505,
+    0 6px 14px rgba(0, 0, 0, 0.58),
+    inset 0 1px 0 rgba(255, 200, 200, 0.22);
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.12s ease, filter 0.15s ease;
+}
+
+.rpg-btn-crimson:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.rpg-btn-crimson:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 #2b0505,
+    0 2px 5px rgba(0, 0, 0, 0.65);
+}
+
+/* Expansão suave de menus e painéis táticos */
+@keyframes drawerExpand {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.drawer-expand {
+  animation: drawerExpand 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Animações da Batalha de Soldados (Teatro de Guerra do Saldo) */
+@keyframes soldierSwordSwing {
+  0%, 100% {
+    transform: rotate(0deg) translateX(0);
+  }
+  28% {
+    transform: rotate(-22deg) translateX(-2px);
+  }
+  52% {
+    transform: rotate(34deg) translateX(5px);
+  }
+  75% {
+    transform: rotate(10deg) translateX(2px);
+  }
+}
+
+@keyframes soldierShieldBrace {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+  }
+  40% {
+    transform: translateX(5px) translateY(-1.5px);
+  }
+  70% {
+    transform: translateX(-2px) translateY(0.5px);
+  }
+}
+
+@keyframes enemyLungeClash {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  35% {
+    transform: translateX(-7px) rotate(-8deg);
+  }
+  65% {
+    transform: translateX(4px) rotate(5deg);
+  }
+}
+
+@keyframes clashSparkBurst {
+  0%, 35%, 100% {
+    opacity: 0;
+    transform: scale(0.4) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25) rotate(25deg);
+  }
+  65% {
+    opacity: 0.7;
+    transform: scale(0.9) rotate(45deg);
+  }
+}
+
+@keyframes arrowVolleyArc {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-14deg);
+  }
+  15% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+    transform: translate3d(135px, -18px, 0) rotate(8deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(175px, 6px, 0) rotate(16deg);
+  }
+}
+
+@keyframes legionChargeWave {
+  0% {
+    opacity: 0;
+    transform: translateX(-24px) scaleX(0.92);
+  }
+  30% {
+    opacity: 1;
+    transform: translateX(12px) scaleX(1.03);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(140px) scaleX(1.1);
+  }
+}
+
+.soldier-swing {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: soldierSwordSwing 1.05s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.soldier-swing-delay {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: soldierSwordSwing 1.15s cubic-bezier(0.22, 1, 0.36, 1) 0.35s infinite;
+}
+
+.soldier-shield-brace {
+  animation: soldierShieldBrace 1.2s ease-in-out infinite;
+}
+
+.enemy-lunge {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: enemyLungeClash 1.1s ease-in-out infinite;
+}
+
+.clash-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: clashSparkBurst 1.05s ease-out infinite;
+}
+
+.arrow-volley-1 {
+  animation: arrowVolleyArc 1.6s linear infinite;
+}
+
+.arrow-volley-2 {
+  animation: arrowVolleyArc 1.6s linear 0.75s infinite;
+}
+
+.legion-charge-wave {
+  animation: legionChargeWave 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Faísca metálica do cursor */
+@keyframes ironSparkFly {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--spark-rot, 0deg)) translateX(0) scaleX(0.6);
+  }
+  45% {
+    opacity: 1;
+    transform: rotate(var(--spark-rot, 0deg)) translateX(10px) scaleX(1.25);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--spark-dx, 14px), var(--spark-dy, 14px), 0) rotate(var(--spark-rot, 0deg)) scaleX(0.3);
+  }
+}
+
+.iron-spark-fly {
+  animation: ironSparkFly 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes sacredPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(197, 155, 39, 0.32));
+    transform: translateY(0);
+  }
+  50% {
+    filter: drop-shadow(0 0 14px rgba(197, 155, 39, 0.62));
+    transform: translateY(-2px);
+  }
+}
+
+.sacred-glow {
+  animation: sacredPulse 3.6s ease-in-out infinite;
+}
+
+/* Respiração patrimonial sutil nos ícones das Arcas */
+@keyframes arcaBreathe {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    opacity: 0.9;
+    filter: drop-shadow(0 0 3px rgba(197, 155, 39, 0.2));
+  }
+  50% {
+    transform: scale(1.065) translateY(-1.5px);
+    opacity: 1;
+    filter: drop-shadow(0 0 9px rgba(228, 199, 112, 0.52));
+  }
+}
+
+.arca-breathe {
+  transform-origin: center center;
+  will-change: transform, opacity;
+  animation: arcaBreathe 3.4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+@keyframes demonFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.02);
+  }
+}
+
+.demon-anim {
+  animation: demonFloat 2.4s ease-in-out infinite;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tab-fade-slide {
+  animation: fadeSlideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes progressSheen {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(260%); }
+}
+
+.progress-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 244, 214, 0.32) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: progressSheen 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes roseRaysSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-rays-slow {
+  transform-origin: 60px 60px;
+  animation: roseRaysSpin 30s linear infinite;
+}
+
+@keyframes stainedShimmer {
+  0%, 100% {
+    opacity: 0.82;
+    filter: drop-shadow(0 0 8px rgba(197, 155, 39, 0.35));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 16px rgba(197, 155, 39, 0.58));
+  }
+}
+
+.stained-shimmer {
+  animation: stainedShimmer 4.2s ease-in-out infinite;
+}
+
+/* Combate Brutal: screen shake no modal + impacto no chefe + rasgo de aço + sangue */
+@keyframes arenaScreenShake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  15% { transform: translate3d(-9px, 4px, 0) rotate(-0.6deg); }
+  30% { transform: translate3d(8px, -5px, 0) rotate(0.6deg); }
+  45% { transform: translate3d(-7px, -3px, 0) rotate(-0.4deg); }
+  65% { transform: translate3d(6px, 3px, 0); }
+  85% { transform: translate3d(-3px, 1px, 0); }
+}
+
+.arena-screen-shake {
+  animation: arenaScreenShake 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes arenaShake {
+  0%, 100% { transform: translateX(0); }
+  18% { transform: translateX(-10px) rotate(-3deg) scale(0.97); }
+  38% { transform: translateX(10px) rotate(3deg) scale(1.02); }
+  60% { transform: translateX(-7px) rotate(-1.5deg); }
+  80% { transform: translateX(5px); }
+}
+
+.arena-shake {
+  animation: arenaShake 0.4s ease-in-out;
+}
+
+@keyframes arenaFlashRed {
+  0%, 100% { box-shadow: none; }
+  30% { box-shadow: inset 0 0 46px rgba(185, 28, 28, 0.9), 0 0 28px rgba(185, 28, 28, 0.65); }
+}
+
+.arena-flash {
+  animation: arenaFlashRed 0.42s ease-out;
+}
+
+@keyframes slashSweep {
+  0% {
+    opacity: 0;
+    transform: scale(0.45) rotate(-32deg);
+  }
+  28% {
+    opacity: 1;
+    transform: scale(1.16) rotate(-32deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.42) rotate(-32deg);
+  }
+}
+
+.slash-effect {
+  animation: slashSweep 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes bloodSplatter {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--splat-x, 24px), var(--splat-y, -18px), 0) scale(0.25);
+  }
+}
+
+.blood-splat-particle {
+  animation: bloodSplatter 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes damagePop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px) scale(0.7);
+  }
+  22% {
+    opacity: 1;
+    transform: translate(-50%, -14px) scale(1.22);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -52px) scale(0.95);
+  }
+}
+
+.damage-float {
+  animation: damagePop 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes shieldWallLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-28px) scale(0.88);
+  }
+  35% {
+    opacity: 1;
+    transform: translateX(0) scale(1.04);
+  }
+  80% {
+    opacity: 0.9;
+    transform: translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-6px) scale(0.96);
+  }
+}
+
+@keyframes shieldWallRight {
+  0% {
+    opacity: 0;
+    transform: translateX(28px) scale(0.88);
+  }
+  35% {
+    opacity: 1;
+    transform: translateX(0) scale(1.04);
+  }
+  80% {
+    opacity: 0.9;
+    transform: translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(6px) scale(0.96);
+  }
+}
+
+.shield-wall-left {
+  animation: shieldWallLeft 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.shield-wall-right {
+  animation: shieldWallRight 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes shieldWave {
+  0% {
+    opacity: 0.95;
+    transform: scale(0.72);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.52);
+  }
+}
+
+.shield-aura-burst {
+  animation: shieldWave 0.72s ease-out forwards;
+}
+
+@keyframes torchFlameFlicker {
+  0%, 100% { transform: scaleY(1) skewX(-2deg); opacity: 0.95; }
+  33% { transform: scaleY(1.12) skewX(3deg); opacity: 1; }
+  66% { transform: scaleY(0.92) skewX(-4deg); opacity: 0.88; }
+}
+
+.torch-flame {
+  transform-origin: center bottom;
+  animation: torchFlameFlicker 0.55s ease-in-out infinite;
+}
+
+@keyframes exhaustPuff {
+  0% {
+    opacity: 0.72;
+    transform: translate3d(0, 0, 0) scale(0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-46px, -18px, 0) scale(2.1);
+  }
+}
+
+.exhaust-smoke-1 {
+  animation: exhaustPuff 0.55s ease-out infinite;
+}
+
+.exhaust-smoke-2 {
+  animation: exhaustPuff 0.55s ease-out 0.27s infinite;
+}
+
+@keyframes bannerFlutter {
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(-3deg) scaleX(0.94); }
+}
+
+.banner-flutter {
+  animation: bannerFlutter 2.2s ease-in-out infinite;
+}
+
+@keyframes waxStampImpact {
+  0% {
+    opacity: 0;
+    transform: scale(2.4) rotate(-18deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.92) rotate(4deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.wax-seal-stamp {
+  animation: waxStampImpact 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes wheelSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-wheel-spin-left {
+  transform-origin: 128px 114px;
+  animation: wheelSpin 0.14s linear infinite;
+}
+
+.animate-wheel-spin-right {
+  transform-origin: 326px 114px;
+  animation: wheelSpin 0.14s linear infinite;
+}
+
+@keyframes engineVibrate {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(1.5px, -1.2px); }
+  50% { transform: translate(-1.5px, 1.2px); }
+  75% { transform: translate(1.2px, 0.8px); }
+}
+
+.engine-vibrate {
+  animation: engineVibrate 0.08s linear infinite;
+}
+
+@keyframes coinFall {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(0.8) rotateY(0deg);
+  }
+  25% {
+    opacity: 1;
+    transform: translate3d(var(--dx-mid, 12px), -45px, 0) scale(1.08) rotateY(180deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--dx-end, 28px), 120px, 0) scale(0.7) rotateY(540deg);
+  }
+}
+
+.coin-particle {
+  animation: coinFall 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes rewardFloatUp {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.85);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -10px) scale(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -68px) scale(1);
+  }
+}
+
+.reward-float-text {
+  animation: rewardFloatUp 1.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Chuva de Luz Divina e Confete Dourado no VictoryModal (desbloqueio de relíquias) */
+@keyframes divineLightBeamPulse {
+  0%, 100% {
+    opacity: 0.22;
+    transform: translateY(-4%) scaleX(0.95);
+  }
+  50% {
+    opacity: 0.52;
+    transform: translateY(3%) scaleX(1.06);
+  }
+}
+
+.divine-light-beam {
+  will-change: transform, opacity;
+  animation: divineLightBeamPulse 3.6s ease-in-out infinite;
+}
+
+@keyframes divineAuraBloom {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.92;
+    transform: scale(1.06);
+  }
+}
+
+.divine-aura-bloom {
+  will-change: transform, opacity;
+  animation: divineAuraBloom 3.2s ease-in-out infinite;
+}
+
+@keyframes goldenConfettiFall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -10vh, 0) rotate3d(1, 0.7, 0.3, 0deg);
+  }
+  8% {
+    opacity: 0.95;
+  }
+  50% {
+    opacity: 1;
+    transform: translate3d(var(--confetti-sway, 28px), 52vh, 0) rotate3d(1, 1, 0.4, 340deg);
+  }
+  88% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(var(--confetti-sway, 28px) * -0.6), 110vh, 0) rotate3d(0.8, 1, 0.6, 720deg);
+  }
+}
+
+.golden-confetti-piece {
+  will-change: transform, opacity;
+  animation: goldenConfettiFall var(--confetti-dur, 3.2s) linear var(--confetti-delay, 0s) infinite;
+}
+
+/* Transição cinematográfica Fade-to-Black e Portões Pesados da Arena (GPU-composited) */
+@keyframes arenaGateFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes arenaGateFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.arena-gate-overlay {
+  will-change: opacity;
+  animation: arenaGateFadeIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.arena-gate-overlay--reveal {
+  animation: arenaGateFadeOut 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.arena-gate-door-left,
+.arena-gate-door-right {
+  will-change: transform, opacity;
+  transition:
+    transform 0.68s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.34s ease-out;
+}
+
+.arena-gate-seam-glow {
+  will-change: transform, opacity;
+  transition:
+    transform 0.56s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.32s ease-out;
+}
+
+.arena-gate-crest-emblem {
+  will-change: transform, opacity;
+  transition:
+    transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.28s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sacred-glow,
+  .arca-breathe,
+  .demon-anim,
+  .tab-fade-slide,
+  .progress-sheen::after,
+  .animate-rays-slow,
+  .stained-shimmer,
+  .arena-screen-shake,
+  .arena-shake,
+  .arena-flash,
+  .slash-effect,
+  .blood-splat-particle,
+  .damage-float,
+  .shield-wall-left,
+  .shield-wall-right,
+  .shield-aura-burst,
+  .siege-watch-vignette,
+  .torch-flame,
+  .exhaust-smoke-1,
+  .exhaust-smoke-2,
+  .banner-flutter,
+  .iron-spark-fly,
+  .wax-seal-stamp,
+  .animate-wheel-spin-left,
+  .animate-wheel-spin-right,
+  .engine-vibrate,
+  .coin-particle,
+  .reward-float-text,
+  .drawer-expand,
+  .soldier-swing,
+  .soldier-swing-delay,
+  .soldier-shield-brace,
+  .enemy-lunge,
+  .clash-spark,
+  .arrow-volley-1,
+  .arrow-volley-2,
+  .legion-charge-wave,
+  .divine-light-beam,
+  .divine-aura-bloom,
+  .golden-confetti-piece,
+  .enemy-front-vignette {
+    animation: none !important;
+  }
+
+  .state-card,
+  .depth-layer-1,
+  .depth-layer-2,
+  .depth-layer-3 {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .arena-gate-overlay {
+    animation: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  .arena-gate-overlay--reveal {
+    opacity: 0 !important;
+  }
+
+  .arena-gate-door-left,
+  .arena-gate-door-right,
+  .arena-gate-seam-glow,
+  .arena-gate-crest-emblem {
+    transform: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  .map-river-flow,
+  .map-river-flow-secondary,
+  .map-river-shimmer,
+  .map-siege-border-flow,
+  .map-conquered-tactical-glow,
+  .map-conquered-rim-flow,
+  .map-artillery-arc,
+  .map-artillery-burst,
+  .map-reticle-spin,
+  .map-siege-ember,
+  .weather-rain-sheet-near,
+  .weather-rain-sheet-far,
+  .weather-mist-bank-1,
+  .weather-mist-bank-2,
+  .weather-mist-bank-3,
+  .weather-snow-flake,
+  .golden-pulse-bar,
+  .golden-pulse-bar::after,
+  .golden-pulse-dot,
+  .synapse-node-pulse,
+  .synapse-signal-flow,
+  .neural-core-glow,
+  .ecg-wave-trace,
+  .heart-pulse-beat,
+  .health-status-breath,
+  .body-aura-pulse,
+  .sacred-ascend-mote,
+  .sacred-halo-breath,
+  .sacred-bar-radiance,
+  .soul-warning-pulse,
+  .sacred-3d-stage,
+  .sacred-3d-beam-sweep,
+  .sacred-3d-ring-spin,
+  .sacred-3d-ring-counter,
+  .sacred-3d-crest-float,
+  .sacred-3d-mote,
+  .grace-history-fade-in,
+  .grace-history-row {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  .sacred-3d-layer {
+    transform: none !important;
+  }
+
+  .map-border-transition,
+  .map-node-transition {
+    transition: none !important;
+  }
+
+  .weather-snow-flake {
+    opacity: 0.25 !important;
+  }
+}
+
+/* Animações cartográficas e transições fluidas do Mapa Topográfico Militar */
+@keyframes mapRiverFlow {
+  from {
+    stroke-dashoffset: 64;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes mapRiverFlowSecondary {
+  from {
+    stroke-dashoffset: 48;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes mapRiverShimmer {
+  0%, 100% {
+    opacity: 0.22;
+  }
+  50% {
+    opacity: 0.52;
+  }
+}
+
+.map-river-flow {
+  stroke-dasharray: 20 12;
+  animation: mapRiverFlow 3.8s linear infinite;
+}
+
+.map-river-flow-secondary {
+  stroke-dasharray: 12 12;
+  animation: mapRiverFlowSecondary 4.8s linear infinite;
+}
+
+.map-river-shimmer {
+  animation: mapRiverShimmer 5.6s ease-in-out infinite;
+}
+
+/* Transições fluidas para fronteiras, curvas de nível, rotas e vegetação */
+.map-border-transition {
+  transition:
+    stroke 620ms cubic-bezier(0.22, 1, 0.36, 1),
+    stroke-width 380ms cubic-bezier(0.22, 1, 0.36, 1),
+    stroke-opacity 550ms cubic-bezier(0.22, 1, 0.36, 1),
+    fill 650ms cubic-bezier(0.22, 1, 0.36, 1),
+    fill-opacity 550ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.map-node-transition {
+  transition:
+    stroke 480ms cubic-bezier(0.22, 1, 0.36, 1),
+    fill 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes mapSiegeBorderFlow {
+  from {
+    stroke-dashoffset: 28;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.map-siege-border-flow {
+  stroke-dasharray: 8 6;
+  animation: mapSiegeBorderFlow 3.4s linear infinite;
+}
+
+/* Brilho Tático nos territórios conquistados */
+@keyframes mapTacticalGlowPulse {
+  0%, 100% {
+    opacity: 0.48;
+  }
+  50% {
+    opacity: 0.92;
+  }
+}
+
+.map-conquered-tactical-glow {
+  animation: mapTacticalGlowPulse 3.2s ease-in-out infinite;
+}
+
+@keyframes mapConqueredRimFlow {
+  from {
+    stroke-dashoffset: 64;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.map-conquered-rim-flow {
+  stroke-dasharray: 26 38;
+  animation: mapConqueredRimFlow 5.2s linear infinite;
+}
+
+@keyframes mapArtilleryBurst {
+  0% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  28% {
+    opacity: 0.95;
+    transform: scale(1.18);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+
+.map-artillery-burst {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mapArtilleryBurst 1.15s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes mapArtilleryShell {
+  0% {
+    stroke-dashoffset: 220;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  75% {
+    stroke-dashoffset: 0;
+    opacity: 0.95;
+  }
+  100% {
+    stroke-dashoffset: -40;
+    opacity: 0;
+  }
+}
+
+.map-artillery-arc {
+  stroke-dasharray: 26 220;
+  animation: mapArtilleryShell 1.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes mapReticleSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.map-reticle-spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mapReticleSpin 14s linear infinite;
+}
+
+@keyframes mapSiegeEmber {
+  0%, 100% {
+    opacity: 0.32;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scale(1.06);
+  }
+}
+
+.map-siege-ember {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mapSiegeEmber 2.2s ease-in-out infinite;
+}
+
+/* Sistema de Clima Dinâmico GPU-Composited (apenas transform e opacity) */
+.weather-layer-fade {
+  will-change: opacity;
+  transition: opacity 750ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.weather-clear-glow {
+  background: radial-gradient(
+    ellipse at 50% -6%,
+    rgba(234, 179, 8, 0.1) 0%,
+    rgba(253, 224, 71, 0.03) 34%,
+    transparent 62%
+  );
+}
+
+.weather-rain-tint {
+  background: linear-gradient(
+    180deg,
+    rgba(12, 22, 40, 0.34) 0%,
+    rgba(15, 23, 42, 0.14) 55%,
+    rgba(9, 14, 24, 0.28) 100%
+  );
+}
+
+.weather-rain-tilt-frame {
+  position: absolute;
+  inset: -20vh -18vw;
+  transform: rotate(11deg);
+  pointer-events: none;
+}
+
+@keyframes weatherRainFallLoop {
+  from {
+    transform: translate3d(0, -50%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.weather-rain-sheet-far,
+.weather-rain-sheet-near {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.weather-rain-sheet-far {
+  opacity: 0.34;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 44px,
+      rgba(148, 197, 255, 0.16) 44px,
+      rgba(148, 197, 255, 0.16) 45px,
+      transparent 45px,
+      transparent 112px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 28px,
+      rgba(203, 225, 255, 0.2) 28px,
+      rgba(203, 225, 255, 0.2) 48px,
+      transparent 48px,
+      transparent 96px
+    );
+  mask-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 42px,
+    #000 42px 47px,
+    transparent 47px 112px
+  );
+  animation: weatherRainFallLoop 1.15s linear infinite;
+}
+
+.weather-rain-sheet-near {
+  opacity: 0.48;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 16px,
+      rgba(219, 234, 254, 0.34) 16px,
+      rgba(219, 234, 254, 0.34) 44px,
+      transparent 44px,
+      transparent 104px
+    );
+  mask-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 68px,
+    #000 68px 70px,
+    transparent 70px 158px
+  );
+  animation: weatherRainFallLoop 0.68s linear infinite;
+}
+
+.weather-mist-tint {
+  background: radial-gradient(
+    ellipse at 50% 62%,
+    rgba(148, 155, 166, 0.14) 0%,
+    rgba(104, 112, 122, 0.08) 54%,
+    rgba(13, 11, 9, 0.16) 100%
+  );
+}
+
+@keyframes weatherMistDriftA {
+  0%, 100% {
+    opacity: 0.36;
+    transform: translate3d(-8%, 0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate3d(8%, -2%, 0) scale(1.06);
+  }
+}
+
+@keyframes weatherMistDriftB {
+  0%, 100% {
+    opacity: 0.44;
+    transform: translate3d(9%, 2%, 0) scale(1.04);
+  }
+  50% {
+    opacity: 0.28;
+    transform: translate3d(-9%, -1%, 0) scale(0.98);
+  }
+}
+
+.weather-mist-bank {
+  position: absolute;
+  left: -25vw;
+  width: 150vw;
+  border-radius: 9999px;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.weather-mist-bank-1 {
+  top: 8%;
+  height: 44vh;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(214, 206, 188, 0.16) 0%,
+    rgba(162, 158, 148, 0.08) 44%,
+    transparent 74%
+  );
+  animation: weatherMistDriftA 22s ease-in-out infinite;
+}
+
+.weather-mist-bank-2 {
+  top: 38%;
+  height: 48vh;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(148, 163, 184, 0.15) 0%,
+    rgba(118, 126, 138, 0.07) 48%,
+    transparent 76%
+  );
+  animation: weatherMistDriftB 28s ease-in-out infinite;
+}
+
+.weather-mist-bank-3 {
+  bottom: -10%;
+  height: 46vh;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(205, 194, 172, 0.18) 0%,
+    rgba(140, 134, 122, 0.08) 46%,
+    transparent 75%
+  );
+  animation: weatherMistDriftA 32s ease-in-out -11s infinite;
+}
+
+.weather-snow-tint {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 56%,
+    rgba(186, 230, 253, 0.08) 88%,
+    rgba(224, 242, 254, 0.14) 100%
+  );
+}
+
+@keyframes weatherSnowFall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -8vh, 0) scale(0.8);
+  }
+  10% {
+    opacity: var(--snow-opacity, 0.75);
+  }
+  50% {
+    opacity: var(--snow-opacity, 0.75);
+    transform: translate3d(calc(var(--snow-dx, 24px) * 0.55), 50vh, 0) scale(1);
+  }
+  90% {
+    opacity: calc(var(--snow-opacity, 0.75) * 0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--snow-dx, 24px), 108vh, 0) scale(0.85);
+  }
+}
+
+.weather-snow-flake {
+  position: absolute;
+  top: 0;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(248, 250, 252, 0.96) 0%, rgba(186, 230, 253, 0.55) 70%, transparent 100%);
+  will-change: transform, opacity;
+  animation: weatherSnowFall var(--snow-dur, 10s) linear var(--snow-delay, 0s) infinite;
+}
+
+/* Pulso dourado sutil da barra de contagem regressiva até o parto (GPU-composited) */
+@keyframes goldenBarPulse {
+  0%, 100% {
+    opacity: 0.86;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes goldenBarGlowSweep {
+  0%, 100% {
+    opacity: 0.18;
+    transform: scaleX(0.985);
+  }
+  50% {
+    opacity: 0.58;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes goldenPulseDot {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.18);
+  }
+}
+
+.golden-pulse-bar {
+  position: relative;
+  will-change: opacity;
+  animation: goldenBarPulse 2.8s ease-in-out infinite;
+}
+
+.golden-pulse-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(253, 224, 71, 0) 0%,
+    rgba(254, 240, 138, 0.55) 68%,
+    rgba(255, 251, 235, 0.9) 100%
+  );
+  transform-origin: left center;
+  will-change: transform, opacity;
+  animation: goldenBarGlowSweep 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.golden-pulse-dot {
+  will-change: transform, opacity;
+  animation: goldenPulseDot 2.8s ease-in-out infinite;
+}
+
+/* Micro-animações Neurais (Mente & Conexões) */
+@keyframes synapseNodePulse {
+  0%, 100% {
+    opacity: 0.65;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.16);
+  }
+}
+
+@keyframes synapseSignalFlow {
+  from {
+    stroke-dashoffset: 40;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes neuralCoreGlow {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.05);
+  }
+}
+
+.synapse-node-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform, opacity;
+  animation: synapseNodePulse 2.4s ease-in-out infinite;
+}
+
+.synapse-signal-flow {
+  stroke-dasharray: 8 12;
+  animation: synapseSignalFlow 2.6s linear infinite;
+}
+
+.neural-core-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform, opacity;
+  animation: neuralCoreGlow 3.2s ease-in-out infinite;
+}
+
+/* Micro-animações Clínicas e Avatar Corporal (Fortaleza Corporal & Exames) */
+@keyframes ecgTraceFlow {
+  0% {
+    stroke-dashoffset: 240;
+    opacity: 0.35;
+  }
+  25% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.95;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.35;
+  }
+}
+
+@keyframes heartBeatPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.88;
+  }
+  16% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+  30% {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+  44% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  62% {
+    transform: scale(1);
+    opacity: 0.88;
+  }
+}
+
+@keyframes healthStatusBreath {
+  0%, 100% {
+    opacity: 0.72;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes bodyAuraPulse {
+  0%, 100% {
+    opacity: 0.38;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 0.78;
+    transform: scale(1.04);
+  }
+}
+
+.ecg-wave-trace {
+  stroke-dasharray: 72 168;
+  animation: ecgTraceFlow 2.4s linear infinite;
+}
+
+.heart-pulse-beat {
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform, opacity;
+  animation: heartBeatPulse 1.45s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.health-status-breath {
+  will-change: transform, opacity;
+  animation: healthStatusBreath 2.6s ease-in-out infinite;
+}
+
+.body-aura-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform, opacity;
+  animation: bodyAuraPulse 3s ease-in-out infinite;
+}
+
+/* Animação Sacra Etérea (Módulo Espiritual & Vigília da Alma - GPU-composited) */
+@keyframes sacredAscendMote {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.65);
+  }
+  25% {
+    opacity: 0.92;
+  }
+  75% {
+    opacity: 0.72;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--mote-dx, 6px), -42px, 0) scale(1.15);
+  }
+}
+
+@keyframes sacredHaloBreath {
+  0%, 100% {
+    opacity: 0.56;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.96;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes sacredBarRadiance {
+  0%, 100% {
+    opacity: 0.25;
+    transform: translate3d(-35%, 0, 0);
+  }
+  50% {
+    opacity: 0.72;
+    transform: translate3d(85%, 0, 0);
+  }
+}
+
+@keyframes soulWarningPulse {
+  0%, 100% {
+    opacity: 0.78;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.035);
+  }
+}
+
+.sacred-ascend-mote {
+  will-change: transform, opacity;
+  animation: sacredAscendMote var(--mote-dur, 3.6s) ease-out var(--mote-delay, 0s) infinite;
+}
+
+.sacred-halo-breath {
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform, opacity;
+  animation: sacredHaloBreath 3.8s ease-in-out infinite;
+}
+
+.sacred-bar-radiance {
+  will-change: transform, opacity;
+  animation: sacredBarRadiance 3s ease-in-out infinite;
+}
+
+.soul-warning-pulse {
+  will-change: transform, opacity;
+  animation: soulWarningPulse 2s ease-in-out infinite;
+}
+
+/* Palco Sacral 3D Realista (Luz Ascensional com Camadas translateZ) */
+.sacred-3d-stage {
+  perspective: 760px;
+  perspective-origin: 50% 42%;
+  transform-style: preserve-3d;
+}
+
+.sacred-3d-rig {
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: rotateX(var(--sacred-rx, 7deg)) rotateY(var(--sacred-ry, -8deg));
+}
+
+.sacred-3d-stage:hover .sacred-3d-rig {
+  transform: rotateX(2deg) rotateY(8deg);
+}
+
+.sacred-3d-layer {
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
+@keyframes sacred3dBeamAscend {
+  0%, 100% {
+    opacity: var(--beam-opacity-min, 0.36);
+    transform: translateZ(-8px) scaleY(0.95);
+  }
+  50% {
+    opacity: var(--beam-opacity-max, 0.88);
+    transform: translateZ(-2px) scaleY(1.06);
+  }
+}
+
+@keyframes sacred3dRingOrbit {
+  0% {
+    transform: translateZ(8px) rotateX(24deg) rotateZ(0deg);
+  }
+  100% {
+    transform: translateZ(8px) rotateX(24deg) rotateZ(360deg);
+  }
+}
+
+@keyframes sacred3dRingCounter {
+  0% {
+    transform: translateZ(16px) rotateY(18deg) rotateZ(360deg);
+  }
+  100% {
+    transform: translateZ(16px) rotateY(18deg) rotateZ(0deg);
+  }
+}
+
+@keyframes sacred3dCrestFloat {
+  0%, 100% {
+    transform: translateZ(34px) translateY(0px);
+  }
+  50% {
+    transform: translateZ(42px) translateY(-3px);
+  }
+}
+
+@keyframes sacred3dMoteRise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 26px, var(--mote-z, 24px)) scale(0.55);
+  }
+  20% {
+    opacity: 0.95;
+  }
+  75% {
+    opacity: 0.78;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--mote-dx, 6px), -68px, calc(var(--mote-z, 24px) + 18px)) scale(1.15);
+  }
+}
+
+.sacred-3d-beam-sweep {
+  transform-origin: center bottom;
+  animation: sacred3dBeamAscend 3.8s ease-in-out infinite;
+}
+
+.sacred-3d-ring-spin {
+  animation: sacred3dRingOrbit 18s linear infinite;
+}
+
+.sacred-3d-ring-counter {
+  animation: sacred3dRingCounter 24s linear infinite;
+}
+
+.sacred-3d-crest-float {
+  animation: sacred3dCrestFloat 3.4s ease-in-out infinite;
+}
+
+.sacred-3d-mote {
+  animation: sacred3dMoteRise var(--mote-dur, 3.6s) ease-out var(--mote-delay, 0s) infinite;
+}
+
+@keyframes graceHistoryFadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.grace-history-fade-in {
+  will-change: transform, opacity;
+  animation: graceHistoryFadeIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.grace-history-row {
+  will-change: transform, opacity;
+  animation: graceHistoryFadeIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) var(--grace-delay, 0ms) both;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #101215;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3f45;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c59b27;
+}

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Crônicas da Família Conceição • Comandante Gabriel</title>
+  <script src="https://tailwindcss.com"></script>
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --bg-stone: #0d0a08;
+      --wood-dark: #18120e;
+      --wood-panel: #221914;
+      --gold-forged: #d4af37;
+      --crimson-blood: #8b1e1e;
+      --parchment: #e8dcc4;
+      --iron-border: #3d312a;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      overflow-x: hidden;
+      background-color: var(--bg-stone);
+      color: var(--parchment);
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 16px;
+      background-image:
+        radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.09) 0%, transparent 55%),
+        radial-gradient(circle at 15% 85%, rgba(139, 30, 30, 0.12) 0%, transparent 50%),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 2px, transparent 2px, transparent 8px);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .font-epic {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .font-mono-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #app-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .rpg-panel {
+      background: linear-gradient(170deg, var(--wood-panel) 0%, var(--wood-dark) 100%);
+      border: 2px solid var(--iron-border);
+      box-shadow:
+        0 14px 38px rgba(0, 0, 0, 0.9),
+        inset 0 0 0 1px rgba(212, 175, 55, 0.22),
+        inset 0 0 28px rgba(0, 0, 0, 0.75);
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .rpg-panel::before,
+    .rpg-panel::after {
+      content: '❖';
+      position: absolute;
+      color: var(--gold-forged);
+      font-size: 12px;
+      line-height: 1;
+      text-shadow: 0 0 6px rgba(212, 175, 55, 0.7);
+      pointer-events: none;
+    }
+    .rpg-panel::before { top: 4px; left: 6px; }
+    .rpg-panel::after { bottom: 4px; right: 6px; }
+
+    .cathedral-glass {
+      background:
+        radial-gradient(circle at 25% 20%, rgba(30, 64, 175, 0.35), transparent 55%),
+        radial-gradient(circle at 80% 75%, rgba(153, 27, 27, 0.35), transparent 55%),
+        linear-gradient(160deg, #1b1512 0%, #0f0b09 100%);
+      border: 2px solid rgba(212, 175, 55, 0.55);
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.12), inset 0 0 24px rgba(0, 0, 0, 0.85);
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .parchment-box {
+      background: linear-gradient(180deg, #2b2119 0%, #1f1712 100%);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7);
+      border-radius: 6px;
+    }
+
+    .rpg-btn-gold {
+      background: linear-gradient(180deg, #e5c158 0%, #b5891d 100%);
+      color: #140e08;
+      border: 1px solid #fff2b2;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .rpg-btn-gold:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .rpg-btn-gold:active { transform: translateY(1px); }
+
+    .rpg-btn-iron {
+      background: linear-gradient(180deg, #2e2520 0%, #1a1411 100%);
+      color: var(--parchment);
+      border: 1px solid #57463c;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+      transition: all 0.15s ease;
+    }
+    .rpg-btn-iron:hover { border-color: var(--gold-forged); color: #fff; }
+
+    .modal-overlay {
+      display: none !important;
+      position: fixed !important;
+      inset: 0 !important;
+      background: rgba(5, 3, 2, 0.9) !important;
+      z-index: 999 !important;
+      align-items: center !important;
+      justify-content: center !important;
+      backdrop-filter: blur(6px);
+      padding: 16px;
+    }
+    .modal-overlay.active { display: flex !important; }
+
+    @media (min-width: 768px) {
+      .grid-desktop-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+    }
+
+    @keyframes sacredPulse {
+      0%, 100% { filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.45)); transform: translateY(0); }
+      50% { filter: drop-shadow(0 0 14px rgba(212, 175, 55, 0.85)); transform: translateY(-3px); }
+    }
+    .sacred-glow { animation: sacredPulse 3.5s ease-in-out infinite; }
+
+    @keyframes demonFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-4px) scale(1.03); }
+    }
+    .demon-anim { animation: demonFloat 2.4s ease-in-out infinite; }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0d0a08; }
+    ::-webkit-scrollbar-thumb { background: #3d312a; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+  </style>
+</head>
+<body class="min-h-screen pb-20 selection:bg-[#d4af37] selection:text-black">
+
+  <svg width="0" height="0" class="hidden">
+    <defs>
+      <linearGradient id="goldMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fff0a8" />
+        <stop offset="45%" stop-color="#d4af37" />
+        <stop offset="100%" stop-color="#7c580b" />
+      </linearGradient>
+      <linearGradient id="steelBlade" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#94a3b8" />
+        <stop offset="50%" stop-color="#f8fafc" />
+        <stop offset="100%" stop-color="#475569" />
+      </linearGradient>
+      <linearGradient id="crimsonShield" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#991b1b" />
+        <stop offset="100%" stop-color="#3b0707" />
+      </linearGradient>
+      <linearGradient id="emeraldGem" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#6ee7b7" />
+        <stop offset="50%" stop-color="#059669" />
+        <stop offset="100%" stop-color="#064e3b" />
+      </linearGradient>
+      <linearGradient id="demonFire" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#ef4444" />
+        <stop offset="50%" stop-color="#991b1b" />
+        <stop offset="100%" stop-color="#1c0404" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-xs sm:max-w-sm w-full pointer-events-none"></div>
+
+  <div id="modal-victory" class="modal-overlay">
+    <div class="rpg-panel border-2 border-[#d4af37] max-w-md w-full p-6 text-center space-y-4">
+      <div class="flex justify-center">
+        <svg viewBox="0 0 100 100" class="w-20 h-20 sacred-glow">
+          <path d="M20 80 L80 20 M80 80 L20 20" stroke="url(#steelBlade)" stroke-width="6" stroke-linecap="round"/>
+          <path d="M22 65 L15 35 L38 50 L50 22 L62 50 L85 35 L78 65 Z" fill="url(#goldMetal)" stroke="#422006" stroke-width="2"/>
+          <circle cx="50" cy="52" r="5" fill="url(#emeraldGem)"/>
+        </svg>
+      </div>
+      <div>
+        <div id="vic-kicker" class="text-xs font-epic tracking-widest text-[#d4af37]">GLÓRIA NO CAMPO DE BATALHA</div>
+        <h3 id="vic-title" class="text-2xl font-epic text-white mt-1">MARCO CONQUISTADO</h3>
+        <p id="vic-desc" class="text-base text-[#e8dcc4] mt-2 leading-relaxed"></p>
+      </div>
+      <button onclick="closeModal('modal-victory')" class="w-full py-3 rounded rpg-btn-gold font-epic text-sm cursor-pointer">
+        Prosseguir na Cruzada
+      </button>
+    </div>
+  </div>
+
+  <div id="modal-arena" class="modal-overlay">
+    <div class="rpg-panel border-2 border-red-800 max-w-xl w-full p-5 space-y-4">
+      <div class="flex items-center justify-between border-b border-[#3d312a] pb-3">
+        <div>
+          <span class="text-xs font-epic text-red-400">ARENA DE COMBATE EM TURNOS</span>
+          <h3 class="text-lg font-epic text-white">DUELO CONTRA O DEMÔNIO DA DÍVIDA</h3>
+        </div>
+        <button onclick="closeModal('modal-arena')" class="px-3 py-1 rounded rpg-btn-iron text-xs font-epic cursor-pointer">Recuar</button>
+      </div>
+
+      <div class="parchment-box p-4">
+        <div class="grid grid-cols-2 gap-4 items-center text-center">
+          <div class="flex flex-col items-center">
+            <div class="text-xs font-epic text-emerald-400 mb-2">COMANDANTE GABRIEL</div>
+            <svg viewBox="0 0 120 120" class="w-24 h-24 sacred-glow">
+              <path d="M60 12 L98 28 V62 C98 88 60 108 60 108 C60 108 22 88 22 62 V28 Z" fill="url(#crimsonShield)" stroke="url(#goldMetal)" stroke-width="4"/>
+              <path d="M60 26 V92 M36 52 H84" stroke="url(#goldMetal)" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="60" cy="52" r="6" fill="#fffbeb"/>
+            </svg>
+            <div class="w-full h-2.5 bg-black rounded overflow-hidden border border-[#57463c] mt-2">
+              <div id="arena-hero-hp" class="h-full bg-emerald-600 transition-all" style="width: 100%"></div>
+            </div>
+            <div class="text-xs font-mono-num text-emerald-300 mt-1">VIGOR: 100%</div>
+          </div>
+
+          <div class="flex flex-col items-center">
+            <div id="arena-enemy-name" class="text-xs font-epic text-red-400 mb-2">GENERAL ROTATIVO</div>
+            <svg viewBox="0 0 120 120" class="w-24 h-24 demon-anim">
+              <path d="M25 45 Q10 15 35 22 Q30 35 42 40 Z" fill="url(#goldMetal)"/>
+Use o código com cuidado.
+HP: 100%
+
+
+
+Empunhe sua arma e desfira o golpe da disciplina!
+
+Espada Templária
+Corte Certeiro
+
+
+Escudo da Fé
+Bloqueio & Contra
+
+
+Golpe de São Miguel
+Dano Crítico
+
+
+
+Apagar Registros da Fortaleza?
+Todos os saldos das arcas, XP, territórios e cartas lacradas serão zerados neste pergaminho digital.
+
+Cancelar
+Confirmar Reset
+
+
+BIGA DE AÇO • TOYOTA COROLLA XEi 2017
+Sair
+
+
+
+Velocidade
+0 km/h
+
+
+Força 2.0
+800 RPM
+
+
+Marcha
+P • PRONTO
+
+
+
+
+Despertar Motor 154 Cavalos
+
+
+
+NV 1
+Comandante Gabriel • PM
+Recruta da Guarda
+
+FORTALEZA FAMÍLIA CONCEIÇÃO
+0 XP
+
+
+Chegada do Herdeiro(a) • 30/06/2027
+--d --h --m --s
+Relógio da Vigília: --:--:--
+
+
+Guarnição (Soldados)
+0 Soldados
+
+Domínios Conquistados
+0 / 6 Feudos
+
+Colheita de Ouro (CDI)
+R$ 0,00
+
+Tentações Derrotadas
+0 Vitórias
+
+
+
+Santuário
+Tesouro
+Biga de Aço
+Provedor
+Mapa
+
+Oráculo da Catedral • Escrivá & Santos
+São Josemaría Escrivá — Caminho, 15
+
+
+
+
+Próximo Ponto
++50 XP Sabedoria
+
+Vigília Contra Gastos por Impulso
+Escudo de 60 Segundos
+Antes de ceder a qualquer compra fora do plano, erga o escudo e reze uma jaculatória até a areia cessar.
+
+
+60s
+Tempo de Guarda
+
+
+Erguer Escudo (60s)
+Enfrentar Chefe
+
+
+Câmara do Tesouro Real
+Arcas de Ouro & Reservas
+
+Registro Automático Ativo
+Arca I • Cartão Mercado Pago
+0%
+
+R$ 0,00
+Meta de Quitação: R$ 6.829,00
+
+
+
+
+
+Guardar
+
+Arca II • Muralha da Família
+0%
+
+R$ 0,00
+Meta Prioritária: R$ 12.000,00
+
+
+
+
+
+Guardar
+
+Arca III • Corolla XEi 2017
+0%
+
+R$ 0,00
+Meta: R$ 45.000,00 (+ R$ 33k carro atual)
+
+
+
+
+
+Guardar
+
+Arca IV • Legado & Tesouro IPCA+
+Longo Prazo
+
+R$ 0,00
+Quitação da Casa & Herança
+
+
+
+
+
+Guardar
+
+
+Colheita dos Rendimentos (CDI Mensal)
+Adicione os juros compostos recebidos para reforçar automaticamente a Muralha da Família.
+
+
+
+Colher Ouro
+
+
+Forja Automotiva
+Toyota Corolla XEi 2017 • 2.0 (154 CV)
+
+Inspecionar Cockpit
+Ouro na Arca IIIR$ 0,00
+Montaria AtualR$ 33.000,00
+Poder de CompraR$ 33.000,00
+
+
+1 Timóteo 5:8 • Oficina de Nazaré
+Deveres de São José (6 Missões)
+
+0 / 6
+
+
+Santo Terço pela Família
+0 Terços completos
+
+
+Meditar +1 Dezena (+40 XP)
+Cápsula do Tempo • Parto 30/06/2027
+Pergaminhos ao Herdeiro(a)
+
+
+Lacrar com Selo Real (+150 XP)
+
+
+
+Cartografia da Cruzada
+Os 6 Feudos da Família Conceição
+
+
+
+
+
+
+
+
+I. Portão do Crédito
+Bloquear o cartão Mercado Pago e completar a Arca I (R$ 6.829).
+
+
+II. Cidadela de São José
+Erguer 100% da Muralha de Emergência (R$ 12.000).
+
+
+III. Vale da Manjedoura
+Nascimento abençoado do Herdeiro(a) em 30/06/2027.
+
+
+IV. Planície da Honra
+Quitação integral do IPVA e do empréstimo familiar.
+
+
+V. Bastião Corolla XEi
+Acumular R$ 45.000 na Arca III para conquista à vista.
+
+
+VI. Monte do Legado
+Construção patrimonial sólida e quitação da casa.
+
+
+Fortaleza Família Conceição • Comandante Gabriel
+Salvamento automático no dispositivo. Exporte seu pergaminho periodicamente.
+
+
+Exportar Backup
+Resetar
+
+const STORAGE_KEY = 'familia_conceicao_app_state_v4';
+const defaultState = {
+box1: 0, box2: 0, box3: 0, box4: 0,
+xp: 0, streak: 0, activeTab: 'comando',
+oracleIdx: 0, rosaryDecades: 0, rosaryCompleted: 0,
+providerDuties: {}, letters: [], cdiTotal: 0
+};
+let state = loadState();
+let jacTimerInterval = null;
+let arenaEnemy = { name: 'General Rotativo', hp: 100, maxHp: 100 };
+const ORACLE_QUOTES = new Array(
+{ saint: 'São Josemaría Escrivá — Caminho, 15', text: '“Não deixes o teu trabalho para amanhã: olha que o que hoje deixas por fazer é uma perda irreparável para ti e para a tua família.”' },
+{ saint: 'São Josemaría Escrivá — Caminho, 815', text: '“Tens a obrigação de te santificares. Tu também. Quem pensa que isso é trabalho exclusivo de sacerdotes e religiosos? A todos, sem exceção, disse o Senhor: Sede perfeitos, como Meu Pai Celestial é perfeito.”' },
+{ saint: 'São Josemaría Escrivá — Sulco, 492', text: '“A verdadeira virtude não é triste nem antipática, mas amavelmente alegre. Guarda a serenidade e o bom humor no teu lar, mesmo quando o combate for duro.”' },
+{ saint: 'São Josemaría Escrivá — Sulco, 527', text: '“Que a tua vida não seja uma vida estéril. Sê útil. Deixa rasto. Ilumina com o resplendor da tua fé e do teu amor.”' },
+{ saint: 'São Josemaría Escrivá — Forja, 681', text: '“Coloca um motivo sobrenatural na tua atividade profissional de cada dia, e terás santificado o trabalho e sustentado com honra a tua casa.”' },
+{ saint: 'São Josemaría Escrivá — Forja, 745', text: '“Senhor, dá-me a santa intransigência nas coisas da fé e dos deveres do meu estado, e a santa transigência com as pessoas que amo.”' },
+{ saint: 'São José — Guarda da Sagrada Família', text: '“O homem justo guarda a sua casa no silêncio, no trabalho fiel e na obediência imediata a Deus.”' },
+{ saint: 'São Miguel Arcanjo — Príncipe da Milícia Celeste', text: '“Quem como Deus? Permanecei firmes na brecha e revesti-vos da armadura da luz contra toda cilada.”' }
+);
+const PROVIDER_TASKS = new Array(
+'Teto Sagrado (Financiamento Caixa R$ 616,88)',
+'Mesa Farta & Abençoada (Supermercado)',
+'Infraestrutura (Energia, Água, Gás, Internet)',
+'Amparo à Esposa & Bebê (Saúde e Fraldas)',
+'Mobilidade & Combustível Racional',
+'Honra de Crédito (Fatura Cartão MP)'
+);
+function loadState() {
+try {
+const raw = localStorage.getItem(STORAGE_KEY);
+if (raw) return Object.assign({}, defaultState, JSON.parse(raw));
+} catch(e) {}
+return JSON.parse(JSON.stringify(defaultState));
+}
+function saveState() {
+try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+function formatBRL(v) {
+return Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+function showToast(title, msg, tone) {
+tone = tone || 'gold';
+const container = document.getElementById('toast-container');
+const map = {
+gold: 'border-[#d4af37] text-[#d4af37]',
+emerald: 'border-emerald-500 text-emerald-300',
+red: 'border-red-600 text-red-400'
+};
+const div = document.createElement('div');
+div.className = 'pointer-events-auto bg-[#18120e]/95 border-l-4 border ' + (map[tone] || map.gold) + ' rounded p-3 shadow-2xl transition-all duration-300 translate-x-4 opacity-0';
+div.innerHTML = '' + title + '' + msg + '';
+container.appendChild(div);
+requestAnimationFrame(function() { div.classList.remove('translate-x-4', 'opacity-0'); });
+setTimeout(function() {
+div.classList.add('opacity-0', 'translate-x-4');
+setTimeout(function() { div.remove(); }, 300);
+}, 3800);
+}
+function setActiveTab(tabId) {
+state.activeTab = tabId;
+saveState();
+const tabs = new Array('comando', 'rota', 'corolla', 'provedor', 'cronicas');
+tabs.forEach(function(t) {
+const sec = document.getElementById('tab-section-' + t);
+const btn = document.getElementById('tab-btn-' + t);
+if (sec) sec.classList.toggle('hidden', t !== tabId);
+if (btn) {
+btn.className = t === tabId
+? 'py-2.5 rounded rpg-btn-gold font-epic text-xs cursor-pointer'
+: 'py-2.5 rounded text-stone-400 hover:text-[#e8dcc4] font-epic text-xs transition cursor-pointer';
+}
+});
+}
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function nextOracleQuote() {
+state.oracleIdx = (state.oracleIdx + 1) % ORACLE_QUOTES.length;
+state.xp += 50;
+saveState();
+renderAll();
+showToast('Sabedoria Adquirida', '+50 XP pela meditação nas escrituras.', 'gold');
+}
+function startJaculatoriaTimer() {
+let t = 60;
+const lbl = document.getElementById('jac-timer');
+if (jacTimerInterval) clearInterval(jacTimerInterval);
+jacTimerInterval = setInterval(function() {
+t--;
+if (lbl) lbl.textContent = t + 's';
+if (t <= 0) {
+clearInterval(jacTimerInterval);
+state.xp += 100;
+state.streak = (state.streak || 0) + 1;
+if (lbl) lbl.textContent = '60s';
+showToast('Tentação Derrotada!', 'Escudo mantido por 60 segundos (+100 XP).', 'emerald');
+saveState();
+renderAll();
+}
+}, 1000);
+showToast('Escudo Erguido', 'Resista e reze durante 60 segundos.', 'gold');
+}
+function openArenaModal() {
+arenaEnemy = { name: 'Demônio dos Juros Rotativos', hp: 100, maxHp: 100 };
+document.getElementById('arena-enemy-name').textContent = arenaEnemy.name;
+document.getElementById('arena-enemy-hp').style.width = '100%';
+document.getElementById('arena-hero-hp').style.width = '100%';
+document.getElementById('arena-enemy-hp-lbl').textContent = 'HP: 100%';
+document.getElementById('arena-log').textContent = 'A besta avança sobre o tesouro! Escolha sua tática.';
+openModal('modal-arena');
+}
+function executeCombatTurn(kind) {
+const dmg = kind === 'artillery' ? 55 : kind === 'shield' ? 40 : 32;
+arenaEnemy.hp = Math.max(0, arenaEnemy.hp - dmg);
+document.getElementById('arena-enemy-hp').style.width = arenaEnemy.hp + '%';
+document.getElementById('arena-enemy-hp-lbl').textContent = 'HP: ' + arenaEnemy.hp + '%';
+document.getElementById('arena-log').textContent = 'Ataque fulminante! A besta perdeu ' + dmg + '% de vida.';
+if (arenaEnemy.hp <= 0) {
+closeModal('modal-arena');
+state.xp += 250;
+saveState();
+renderAll();
+document.getElementById('vic-title').textContent = 'BESTA ABATIDA!';
+document.getElementById('vic-desc').textContent = 'Você venceu o inimigo do mês com disciplina, honra e oração (+250 XP).';
+openModal('modal-victory');
+}
+}
+function saveBox(num) {
+const val = parseFloat(document.getElementById('input-box-' + num).value);
+if (isNaN(val) || val < 0) return;
+state['box' + num] = val;
+state.xp += 80;
+document.getElementById('input-box-' + num).value = '';
+saveState();
+renderAll();
+showToast('Tesouro Atualizado', 'Arca ' + num + ' ajustada para ' + formatBRL(val) + ' (+80 XP).', 'emerald');
+}
+function harvestCdi() {
+const val = parseFloat(document.getElementById('cdi-input').value);
+if (isNaN(val) || val <= 0) return;
+state.cdiTotal = (state.cdiTotal || 0) + val;
+state.box2 += val;
+state.xp += 100;
+document.getElementById('cdi-input').value = '';
+saveState();
+renderAll();
+showToast('Ouro Colhido', '+' + formatBRL(val) + ' adicionados à Muralha da Família (+100 XP).', 'gold');
+}
+function openCockpitModal() { openModal('modal-cockpit'); }
+function revEngine() {
+document.getElementById('cockpit-speed').textContent = '125 km/h';
+document.getElementById('cockpit-rpm').textContent = '5.200 RPM';
+document.getElementById('cockpit-gear').textContent = 'D7 • SPORT';
+setTimeout(function() {
+document.getElementById('cockpit-speed').textContent = '0 km/h';
+document.getElementById('cockpit-rpm').textContent = '800 RPM';
+document.getElementById('cockpit-gear').textContent = 'P • PRONTO';
+}, 2500);
+}
+function toggleDuty(idx) {
+state.providerDuties[idx] = !state.providerDuties[idx];
+if (state.providerDuties[idx]) state.xp += 120;
+saveState();
+renderAll();
+showToast('Honra de São José', 'Missão de provedor registrada (+120 XP).', 'gold');
+}
+function prayRosary() {
+state.rosaryDecades = (state.rosaryDecades || 0) + 1;
+state.xp += 40;
+if (state.rosaryDecades >= 5) {
+state.rosaryDecades = 0;
+state.rosaryCompleted = (state.rosaryCompleted || 0) + 1;
+state.xp += 200;
+showToast('Terço Concluído!', 'Terço #' + state.rosaryCompleted + ' ofertado pela família (+200 XP).', 'emerald');
+} else {
+showToast('Dezena Meditada', 'Mistério ' + state.rosaryDecades + '/5 concluído (+40 XP).', 'gold');
+}
+saveState();
+renderAll();
+}
+function saveLetter() {
+const title = document.getElementById('letter-title').value.trim();
+const body = document.getElementById('letter-body').value.trim();
+if (!title || !body) return;
+state.letters = state.letters || new Array();
+state.letters.unshift({ title: title, body: body, date: new Date().toLocaleDateString('pt-BR') });
+state.xp += 150;
+document.getElementById('letter-title').value = '';
+document.getElementById('letter-body').value = '';
+saveState();
+renderAll();
+showToast('Pergaminho Lacrado', 'Carta selada na cápsula do tempo (+150 XP).', 'gold');
+}
+function deleteLetter(idx) {
+state.letters.splice(idx, 1);
+saveState();
+renderAll();
+}
+function exportBackup() {
+const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = 'cronicas_familia_conceicao_' + new Date().toISOString().slice(0,10) + '.json';
+a.click();
+a.remove();
+URL.revokeObjectURL(url);
+showToast('Pergaminho Exportado', 'Cópia de segurança salva com sucesso.', 'emerald');
+}
+function confirmReset() {
+localStorage.removeItem(STORAGE_KEY);
+state = JSON.parse(JSON.stringify(defaultState));
+saveState();
+closeModal('modal-reset');
+renderAll();
+showToast('Fortaleza Reiniciada', 'Todos os registros foram limpos.', 'gold');
+}
+function updateLiveClockAndCountdown() {
+const now = new Date();
+document.getElementById('live-clock').textContent = now.toLocaleTimeString('pt-BR');
+const dueMs = new Date('2027-06-30T08:00:00').getTime();
+const diffMs = Math.max(0, dueMs - now.getTime());
+const d = Math.floor(diffMs / 86400000);
+const h = Math.floor((diffMs % 86400000) / 3600000);
+const m = Math.floor((diffMs % 3600000) / 60000);
+const s = Math.floor((diffMs % 60000) / 1000);
+document.getElementById('baby-countdown').textContent = d + 'd ' + String(h).padStart(2, '0') + 'h ' + String(m).padStart(2, '0') + 'm ' + String(s).padStart(2, '0') + 's';
+}
+function renderAll() {
+const lvl = Math.floor(state.xp / 500) + 1;
+const xpInLvl = state.xp % 500;
+const rank = state.xp >= 7000 ? 'Grão-Mestre Provedor' : state.xp >= 4000 ? 'Paladino do Lar' : state.xp >= 2000 ? 'Cavaleiro Templário' : state.xp >= 800 ? 'Escudeiro Fiel' : 'Recruta da Guarda';
+document.getElementById('hud-level').textContent = 'NV ' + lvl;
+document.getElementById('hud-rank').textContent = rank;
+document.getElementById('hud-xp-text').textContent = state.xp.toLocaleString('pt-BR') + ' XP';
+document.getElementById('hud-xp-bar').style.width = Math.min(100, Math.round((xpInLvl / 500) * 100)) + '%';
+const totalWealth = (state.box1 || 0) + (state.box2 || 0) + (state.box3 || 0) + (state.box4 || 0);
+document.getElementById('kpi-soldiers').textContent = Math.floor(totalWealth / 100) + ' Soldados';
+document.getElementById('kpi-territories').textContent = ((state.box1 >= 6829 ? 1 : 0) + (state.box2 >= 12000 ? 1 : 0) + (state.box3 >= 45000 ? 1 : 0)) + ' / 6 Feudos';
+document.getElementById('kpi-cdi').textContent = formatBRL(state.cdiTotal || 0);
+document.getElementById('kpi-temptations').textContent = (state.streak || 0) + ' Vitórias';
+const q = ORACLE_QUOTES[state.oracleIdx % ORACLE_QUOTES.length];
+document.getElementById('oracle-saint').textContent = q.saint;
+document.getElementById('oracle-quote').textContent = q.text;
+const boxes = new Array(
+{ id: 1, target: 6829 },
+{ id: 2, target: 12000 },
+{ id: 3, target: 45000 },
+{ id: 4, target: 10000 }
+);
+boxes.forEach(function(b) {
+const val = state['box' + b.id] || 0;
+const pct = Math.min(100, Math.round((val / b.target) * 100));
+document.getElementById('box' + b.id + '-val').textContent = formatBRL(val);
+if (b.id !== 4 && document.getElementById('box' + b.id + '-pct')) {
+document.getElementById('box' + b.id + '-pct').textContent = pct + '%';
+}
+if (document.getElementById('box' + b.id + '-bar')) {
+document.getElementById('box' + b.id + '-bar').style.width = pct + '%';
+}
+});
+const c3 = state.box3 || 0;
+document.getElementById('corolla-box-lbl').textContent = formatBRL(c3);
+document.getElementById('corolla-total-lbl').textContent = formatBRL(c3 + 33000);
+let dutiesDone = 0;
+document.getElementById('provider-list').innerHTML = PROVIDER_TASKS.map(function(task, i) {
+const done = !!state.providerDuties[i];
+if (done) dutiesDone++;
+return '' +
+'' + task + '' +
+'✔' +
+'';
+}).join('');
+document.getElementById('provider-count').textContent = dutiesDone + ' / 6';
+document.getElementById('rosary-lbl').textContent = (state.rosaryCompleted || 0) + ' Terços completos';
+const decadesArr = new Array(1, 2, 3, 4, 5);
+document.getElementById('rosary-grid').innerHTML = decadesArr.map(function(n) {
+const active = (state.rosaryDecades || 0) >= n;
+return '' + n + 'ª';
+}).join('');
+document.getElementById('letters-box').innerHTML = (state.letters || new Array()).map(function(l, idx) {
+return '' +
+'' +
+'✠ ' + l.title + '' +
+'✕' +
+'' +
+'"' + l.body + '"' +
+'' + l.date + '' +
+'';
+}).join('');
+}
+document.addEventListener('DOMContentLoaded', function() {
+setActiveTab(state.activeTab || 'comando');
+renderAll();
+updateLiveClockAndCountdown();
+setInterval(updateLiveClockAndCountdown, 1000);
+});
