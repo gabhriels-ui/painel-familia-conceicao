@@ -13,6 +13,7 @@ import {
   Swords,
 } from 'lucide-react';
 import type { TabId } from '../types/chronicles';
+import { PWAInstallButton } from './PWAInstallButton';
 
 export type CloudSyncStatus = 'local' | 'syncing' | 'synced' | 'error';
 
@@ -116,8 +117,9 @@ export function TopBar({
             })}
           </nav>
 
-          {/* Zona 3: Sincronia & Ação Principal (Arena) */}
+          {/* Zona 3: Sincronia, Instalação PWA & Ação Principal (Arena) */}
           <div className="flex items-center gap-2 shrink-0">
+            <PWAInstallButton />
             {!authReady ? (
               <span
                 className="px-2.5 py-2 rounded-lg border border-white/10 bg-[#181b20] text-xs text-[#9e9380] flex items-center gap-1.5 min-h-[40px]"

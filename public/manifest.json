@@ -1,0 +1,40 @@
+{
+  "id": "/",
+  "name": "Crônicas da Família Conceição · Comandante Gabriel",
+  "short_name": "Família C.",
+  "description": "Fortaleza estratégica da Família Conceição: gestão das arcas financeiras, vida espiritual, deveres de provedor e metas rumo a 30/06/2027.",
+  "theme_color": "#0d0b09",
+  "background_color": "#0d0b09",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "pt-BR",
+  "categories": ["productivity", "lifestyle", "finance"],
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

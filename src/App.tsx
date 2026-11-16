@@ -14,6 +14,7 @@ import { EmberCanvas } from './components/EmberCanvas';
 import { Footer } from './components/Footer';
 import { IronSparkOverlay } from './components/IronSparkOverlay';
 import { MapTab } from './components/MapTab';
+import { OfflineIndicator } from './components/OfflineIndicator';
 import {
   ArenaModal,
   CockpitModal,
@@ -283,6 +284,27 @@ export default function App() {
       // Ignore storage quota errors
     }
   }, [state]);
+
+  useEffect(() => {
+    const flushLocalSave = () => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(stateRef.current));
+      } catch {
+        // Ignore storage quota errors
+      }
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushLocalSave();
+      }
+    };
+    window.addEventListener('pagehide', flushLocalSave);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      window.removeEventListener('pagehide', flushLocalSave);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   const dismissToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -2285,6 +2307,7 @@ export default function App() {
       <IronSparkOverlay />
       <RewardJuiceOverlay bursts={rewardBursts} />
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+      <OfflineIndicator />
 
       <VictoryModal data={victoryModal} onClose={() => setVictoryModal(null)} />
       <ArenaModal
